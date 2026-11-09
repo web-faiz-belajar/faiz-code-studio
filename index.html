@@ -5,11 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faiz Code Studio</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <h1>Faiz Code Studio</h1>
-    <p>Tempat belajar dan membuat aplikasi sendiri.</p>
+    <header class="header">
+        <div class="logo">FAIZ CODE STUDIO</div>
+        <button class="run-btn" onclick="runCode()">
+            ▶ RUN
+        </button>
+    </header>
+
+    <main class="workspace">
+
+        <!-- EDITOR KODE -->
+        <section class="editor">
+
+            <div class="editor-title">
+                HTML EDITOR
+            </div>
+
+            <textarea id="htmlCode" spellcheck="false"><h1>Halo Faiz!</h1>
+<p>Selamat datang di aplikasi coding saya.</p></textarea>
+
+        </section>
+
+        <!-- SIMULATOR HP -->
+        <section class="preview">
+
+            <div class="preview-title">
+                PHONE SIMULATOR
+            </div>
+
+            <div class="phone">
+                <iframe id="previewFrame"></iframe>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
