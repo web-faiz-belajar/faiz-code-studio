@@ -550,6 +550,8 @@ function createItem() {
 
         saveData();
         renderAll();
+        renderWelcomeProjects();
+        welcomeScreen.style.display = "none";
         openFirstHtml();
         closeModal();
         showToast("Project berhasil dibuat");
