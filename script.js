@@ -604,13 +604,12 @@ document.getElementById("reloadBtn").addEventListener("click", runCode);
 ===================================== */
 
 document.getElementById("menuBtn").addEventListener("click", () => {
+    const layout = document.querySelector(".app-layout");
     const sidebar = document.getElementById("sidebar");
 
-    if (sidebar.style.display === "none") {
-        sidebar.style.display = "";
-    } else {
-        sidebar.style.display = "none";
-    }
+    sidebar.style.display = "";
+
+    layout.classList.toggle("sidebar-closed");
 });
 
 /* =====================================
