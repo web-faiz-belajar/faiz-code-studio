@@ -181,6 +181,31 @@
 
 <div id="toast" class="toast"></div>
 
+<script>
+window.addEventListener("error", function(event) {
+    const message = document.createElement("div");
+
+    message.style.cssText = `
+        position:fixed;
+        z-index:9999;
+        bottom:10px;
+        left:10px;
+        right:10px;
+        padding:15px;
+        background:#8b1e2d;
+        color:white;
+        font-size:12px;
+        border-radius:10px;
+        overflow-wrap:anywhere;
+    `;
+
+    message.textContent =
+        "JavaScript Error: " + event.message;
+
+    document.body.appendChild(message);
+});
+</script>
+
 <script src="./script.js"></script>
 </body>
 </html>
