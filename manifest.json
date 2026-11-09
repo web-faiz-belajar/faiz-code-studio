@@ -1,12 +1,15 @@
 
 {
-  "id": "./",
+  "id": "https://web-faiz-belajar.github.io/faiz-code-studio/",
   "name": "Faiz Code Studio",
   "short_name": "Code Studio",
   "description": "Studio coding web langsung dari HP.",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "https://web-faiz-belajar.github.io/faiz-code-studio/",
+  "scope": "https://web-faiz-belajar.github.io/faiz-code-studio/",
   "display": "standalone",
+  "display_override": [
+    "standalone"
+  ],
   "orientation": "landscape",
   "background_color": "#020304",
   "theme_color": "#080d18",
