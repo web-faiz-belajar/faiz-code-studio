@@ -648,7 +648,6 @@ function starterContent(name) {
     return "";
 }
 
-
 /* =========================================
    MODAL EVENTS
 ========================================= */
@@ -833,3 +832,63 @@ function openFirstHtml() {
 loadData();
 renderAll();
 openFirstHtml();
+
+/* =====================================
+   WELCOME SCREEN - PROJECT SYSTEM
+===================================== */
+
+const welcomeScreen = $("welcomeScreen");
+const welcomeProjectList = $("welcomeProjectList");
+
+/* TAMPILKAN DAFTAR PROJECT */
+
+function renderWelcomeProjects() {
+    welcomeProjectList.innerHTML = "";
+
+    projects.forEach(project => {
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "welcome-project-item";
+        button.textContent = project.name;
+
+        button.addEventListener("click", () => {
+            enterWelcomeProject(project.id);
+        });
+
+        welcomeProjectList.appendChild(button);
+    });
+}
+
+/* MASUK KE PROJECT */
+
+function enterWelcomeProject(projectId) {
+    currentProjectId = projectId;
+
+    activeFile = null;
+    openTabs = [];
+    selectedFolder = "";
+
+    codeEditor.value = "";
+    codeEditor.disabled = true;
+
+    activeFilePath.textContent = "Belum ada file";
+    languageStatus.textContent = "No file";
+
+    saveData();
+    renderAll();
+    openFirstHtml();
+
+    welcomeScreen.style.display = "none";
+}
+
+/* TOMBOL PROJECT BARU */
+
+$("welcomeNewProject").addEventListener("click", () => {
+    showCreateModal("project");
+});
+
+/* TAMPILKAN PROJECT SAAT APLIKASI DIBUKA */
+
+renderWelcomeProjects();
+welcomeScreen.style.display = "flex";
