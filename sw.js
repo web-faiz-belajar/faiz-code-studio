@@ -1,5 +1,6 @@
 
-const CACHE_NAME = "faiz-code-studio-v3";
+const CACHE_NAME = "faiz-code-studio-v4";
+
 const APP_FILES = [
     "./",
     "./index.html",
@@ -7,10 +8,11 @@ const APP_FILES = [
     "./script.js",
     "./manifest.json",
     "./icon.svg",
-    "./sw.js"
+    "./sw.js",
     "./icon-192.png",
     "./icon-512.png"
 ];
+
 
 /* SIMPAN FILE APLIKASI */
 
