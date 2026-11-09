@@ -894,3 +894,17 @@ $("welcomeNewProject").addEventListener("click", () => {
 
 renderWelcomeProjects();
 welcomeScreen.style.display = "flex";
+
+/* SERVICE WORKER REGISTRATION */
+
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+            .then(() => {
+                console.log("Faiz Code Studio siap digunakan.");
+            })
+            .catch(error => {
+                console.error("Service Worker gagal:", error);
+            });
+    });
+}
