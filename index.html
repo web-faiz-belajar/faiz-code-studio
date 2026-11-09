@@ -7,46 +7,47 @@
     <title>Faiz Code Studio</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <header class="header">
-        <div class="logo">FAIZ CODE STUDIO</div>
-        <button class="run-btn" onclick="runCode()">
-            ▶ RUN
-        </button>
-    </header>
+<header class="header">
+    <div class="logo">FAIZ CODE STUDIO</div>
+    <button class="run-btn" onclick="runCode()">▶ RUN</button>
+</header>
 
-    <main class="workspace">
+<main class="workspace">
 
-        <!-- EDITOR KODE -->
-        <section class="editor">
+    <section class="editor">
+        <div class="tabs">
+            <button class="tab active" onclick="openTab('html')">HTML</button>
+            <button class="tab" onclick="openTab('css')">CSS</button>
+            <button class="tab" onclick="openTab('js')">JS</button>
+        </div>
 
-            <div class="editor-title">
-                HTML EDITOR
-            </div>
+        <textarea id="htmlCode"><h1>Halo Faiz!</h1>
+<p>Selamat datang di Faiz Code Studio.</p></textarea>
 
-            <textarea id="htmlCode" spellcheck="false"><h1>Halo Faiz!</h1>
-<p>Selamat datang di aplikasi coding saya.</p></textarea>
+        <textarea id="cssCode" hidden>body {
+    font-family: Arial;
+    text-align: center;
+    padding: 20px;
+}
 
-        </section>
+h1 {
+    color: blue;
+}</textarea>
 
-        <!-- SIMULATOR HP -->
-        <section class="preview">
+        <textarea id="jsCode" hidden>console.log("Halo Faiz!");</textarea>
+    </section>
 
-            <div class="preview-title">
-                PHONE SIMULATOR
-            </div>
+    <section class="preview">
+        <div class="preview-title">PHONE SIMULATOR</div>
+        <div class="phone">
+            <iframe id="previewFrame"></iframe>
+        </div>
+    </section>
 
-            <div class="phone">
-                <iframe id="previewFrame"></iframe>
-            </div>
+</main>
 
-        </section>
-
-    </main>
-
-    <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
