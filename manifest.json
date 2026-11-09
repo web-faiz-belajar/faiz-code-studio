@@ -1,0 +1,18 @@
+
+{
+  "id": "./",
+  "name": "Faiz Code Studio",
+  "short_name": "Code Studio",
+  "description": "Studio belajar dan membuat website langsung dari HP.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#020304",
+  "theme_color": "#080d18",
+  "categories": [
+    "education",
+    "developer",
+    "productivity"
+  ]
+}
