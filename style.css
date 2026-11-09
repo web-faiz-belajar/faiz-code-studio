@@ -458,3 +458,29 @@ button, select {
         font-size: 11px;
     }
 }
+
+/* SAAT EXPLORER DITUTUP */
+.app-layout.sidebar-closed {
+    grid-template-columns: minmax(0, 1fr) 240px;
+}
+
+.app-layout.sidebar-closed .editor-panel {
+    min-width: 0;
+}
+
+/* UKURAN SIMULATOR */
+.app-layout.sidebar-closed .phone-frame {
+    width: 190px;
+    max-width: 100%;
+}
+
+/* LAYAR KECIL */
+@media (max-width: 700px) {
+    .app-layout.sidebar-closed {
+        grid-template-columns: minmax(0, 1fr) 125px;
+    }
+
+    .app-layout.sidebar-closed .phone-frame {
+        width: 115px;
+    }
+}
