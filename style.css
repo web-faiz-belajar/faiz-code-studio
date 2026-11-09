@@ -1,45 +1,280 @@
 
-function openTab(type) {
-    const editors = {
-        html: document.getElementById("htmlCode"),
-        css: document.getElementById("cssCode"),
-        js: document.getElementById("jsCode")
-    };
+/* =========================
+   RESET
+========================= */
 
-    Object.keys(editors).forEach(key => {
-        editors[key].hidden = key !== type;
-    });
-
-    document.querySelectorAll(".tab").forEach(tab => {
-        tab.classList.toggle(
-            "active",
-            tab.textContent.toLowerCase() === type
-        );
-    });
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-function runCode() {
-    const html = document.getElementById("htmlCode").value;
-    const css = document.getElementById("cssCode").value;
-    const js = document.getElementById("jsCode").value;
-
-    const preview = document.getElementById("previewFrame");
-
-    preview.srcdoc = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <style>${css}</style>
-        </head>
-        <body>
-            ${html}
-            <script>
-                ${js.replace(/<\/script/gi, "<\\/script")}
-            <\/script>
-        </body>
-        </html>
-    `;
+body {
+    font-family: Arial, sans-serif;
+    background: #0d1117;
+    color: #ffffff;
+    min-height: 100vh;
+    overflow: hidden;
 }
 
-runCode();
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    height: 55px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 15px;
+}
+
+.logo {
+    font-size: 17px;
+    font-weight: bold;
+    color: #58a6ff;
+    letter-spacing: 0.5px;
+}
+
+.run-btn {
+    background: #238636;
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.run-btn:active {
+    background: #2ea043;
+    transform: scale(0.96);
+}
+
+/* =========================
+   WORKSPACE
+========================= */
+
+.workspace {
+    display: flex;
+    height: calc(100vh - 55px);
+    gap: 8px;
+    padding: 8px;
+}
+
+/* =========================
+   CODE EDITOR
+========================= */
+
+.editor {
+    width: 50%;
+    min-width: 0;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* EDITOR TABS */
+
+.tabs {
+    display: flex;
+    background: #21262d;
+    border-bottom: 1px solid #30363d;
+    flex-shrink: 0;
+}
+
+.tab {
+    flex: 1;
+    padding: 12px 5px;
+    border: none;
+    background: transparent;
+    color: #8b949e;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.tab.active {
+    color: #58a6ff;
+    background: #161b22;
+    border-bottom: 2px solid #58a6ff;
+}
+
+/* TEXTAREA */
+
+.editor textarea {
+    display: block;
+    width: 100%;
+    height: 100%;
+    flex: 1;
+
+    background: #0d1117;
+    color: #d2e4ff;
+
+    border: none;
+    outline: none;
+    resize: none;
+
+    padding: 12px;
+
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.7;
+
+    white-space: pre;
+    overflow: auto;
+    tab-size: 4;
+}
+
+.editor textarea[hidden] {
+    display: none;
+}
+
+/* =========================
+   PHONE SIMULATOR
+========================= */
+
+.preview {
+    width: 50%;
+    min-width: 0;
+
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 12px;
+    overflow: hidden;
+}
+
+.preview-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #58a6ff;
+    margin-bottom: 15px;
+    flex-shrink: 0;
+}
+
+/* PHONE FRAME */
+
+.phone {
+    width: 100%;
+    max-width: 230px;
+    height: 390px;
+
+    background: #000000;
+    border: 7px solid #30363d;
+    border-radius: 30px;
+
+    overflow: hidden;
+    position: relative;
+}
+
+/* PHONE SCREEN */
+
+.phone iframe {
+    width: 100%;
+    height: 100%;
+
+    border: none;
+    background: white;
+
+    display: block;
+}
+
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
+
+@media (max-width: 600px) {
+
+    .header {
+        height: 50px;
+        padding: 0 10px;
+    }
+
+    .logo {
+        font-size: 13px;
+    }
+
+    .run-btn {
+        padding: 8px 13px;
+        font-size: 11px;
+    }
+
+    .workspace {
+        height: calc(100dvh - 50px);
+        gap: 5px;
+        padding: 5px;
+    }
+
+    .editor,
+    .preview {
+        width: 50%;
+    }
+
+    .tabs {
+        width: 100%;
+    }
+
+    .tab {
+        font-size: 10px;
+        padding: 11px 2px;
+    }
+
+    .editor textarea {
+        font-size: 10px;
+        padding: 7px;
+        line-height: 1.6;
+    }
+
+    .preview {
+        padding: 8px 4px;
+    }
+
+    .preview-title {
+        font-size: 10px;
+        margin-bottom: 12px;
+    }
+
+    .phone {
+        width: 100%;
+        height: min(65vh, 390px);
+        border-width: 4px;
+        border-radius: 20px;
+    }
+}
+
+/* =========================
+   LANDSCAPE MODE
+========================= */
+
+@media (max-height: 450px) {
+
+    .header {
+        height: 42px;
+    }
+
+    .workspace {
+        height: calc(100dvh - 42px);
+    }
+
+    .phone {
+        height: calc(100% - 5px);
+        max-width: 220px;
+    }
+
+    .preview-title {
+        margin-bottom: 5px;
+    }
+}
