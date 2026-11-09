@@ -1,280 +1,460 @@
 
-/* =========================
-   RESET
-========================= */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    background: #0d1117;
-    color: #ffffff;
-    min-height: 100vh;
-    overflow: hidden;
+:root {
+    --bg: #080b14;
+    --panel: #101522;
+    --panel2: #151c2b;
+    --border: #252e40;
+    --text: #e7ebf5;
+    --muted: #8792a8;
+    --primary: #7185ff;
+    --green: #35d49a;
 }
 
-/* =========================
-   HEADER
-========================= */
+body {
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
 
-.header {
-    height: 55px;
-    background: #161b22;
-    border-bottom: 1px solid #30363d;
+/* TOP BAR */
 
+.topbar {
+    height: 58px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-
-    padding: 0 15px;
+    gap: 15px;
+    padding: 0 16px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
 }
 
-.logo {
-    font-size: 17px;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
     font-weight: bold;
-    color: #58a6ff;
-    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.brand-icon {
+    width: 29px;
+    height: 29px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: var(--primary);
+    color: white;
+}
+
+button, select {
+    cursor: pointer;
+    font: inherit;
+}
+
+.icon-btn,
+#newFolderBtn,
+#newFileBtn,
+#reloadBtn {
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 7px;
+    font-size: 17px;
+}
+
+#projectSelect {
+    min-width: 100px;
+    max-width: 180px;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--panel2);
+    color: var(--text);
 }
 
 .run-btn {
-    background: #238636;
-    color: white;
+    margin-left: auto;
+    padding: 9px 17px;
     border: none;
-    padding: 9px 18px;
-    border-radius: 6px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.run-btn:active {
-    background: #2ea043;
-    transform: scale(0.96);
-}
-
-/* =========================
-   WORKSPACE
-========================= */
-
-.workspace {
-    display: flex;
-    height: calc(100vh - 55px);
-    gap: 8px;
-    padding: 8px;
-}
-
-/* =========================
-   CODE EDITOR
-========================= */
-
-.editor {
-    width: 50%;
-    min-width: 0;
-    background: #161b22;
-    border: 1px solid #30363d;
     border-radius: 8px;
+    background: var(--green);
+    color: #06140f;
+    font-weight: bold;
+}
+
+/* MAIN LAYOUT */
+
+.app-layout {
+    height: calc(100dvh - 58px);
+    display: grid;
+    grid-template-columns: 205px minmax(0, 1fr) 270px;
     overflow: hidden;
+}
+
+/* EXPLORER */
+
+.sidebar {
+    min-width: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+}
+
+.panel-heading,
+.project-heading,
+.editor-heading,
+.preview-heading {
+    min-height: 43px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+}
+
+#newProjectBtn {
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel2);
+    color: var(--text);
+    font-size: 11px;
+}
+
+.project-heading {
+    background: #0c111e;
+}
+
+.file-tree {
+    padding: 10px;
+    font-size: 13px;
+}
+
+.empty-message {
+    color: var(--muted);
+    text-align: center;
+    padding: 20px 5px;
+}
+
+/* EDITOR */
+
+.editor-panel {
+    min-width: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    background: #0b0f19;
 }
 
-/* EDITOR TABS */
+.editor-heading {
+    justify-content: space-between;
+}
 
-.tabs {
+#activeFilePath {
+    font-weight: normal;
+    letter-spacing: 0;
+    color: var(--primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.editor-tabs {
+    min-height: 38px;
     display: flex;
-    background: #21262d;
-    border-bottom: 1px solid #30363d;
+    overflow-x: auto;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+}
+
+.editor-container {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.line-numbers {
+    width: 35px;
     flex-shrink: 0;
+    padding: 15px 8px;
+    overflow: hidden;
+    text-align: right;
+    color: #566078;
+    background: #0b0f19;
+    font: 13px/1.7 monospace;
+    white-space: pre;
 }
 
-.tab {
+#codeEditor {
     flex: 1;
-    padding: 12px 5px;
-    border: none;
-    background: transparent;
-    color: #8b949e;
-    font-weight: bold;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.tab.active {
-    color: #58a6ff;
-    background: #161b22;
-    border-bottom: 2px solid #58a6ff;
-}
-
-/* TEXTAREA */
-
-.editor textarea {
-    display: block;
     width: 100%;
-    height: 100%;
-    flex: 1;
-
-    background: #0d1117;
-    color: #d2e4ff;
-
+    min-width: 0;
+    resize: none;
     border: none;
     outline: none;
-    resize: none;
-
-    padding: 12px;
-
-    font-family: monospace;
-    font-size: 13px;
-    line-height: 1.7;
-
+    padding: 15px 10px;
+    background: #0b0f19;
+    color: #dce5ff;
+    font: 13px/1.7 monospace;
+    tab-size: 4;
     white-space: pre;
     overflow: auto;
-    tab-size: 4;
 }
 
-.editor textarea[hidden] {
+.editor-footer,
+.preview-footer {
+    min-height: 30px;
+    padding: 7px 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 10px;
+    background: var(--panel);
+    border-top: 1px solid var(--border);
+}
+
+/* PHONE PREVIEW */
+
+.preview-panel {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+}
+
+.phone-area {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 8px;
+    overflow: auto;
+}
+
+.phone-frame {
+    position: relative;
+    width: min(100%, 220px);
+    aspect-ratio: 9 / 19.5;
+    max-height: 100%;
+    padding: 9px;
+    display: flex;
+    flex-direction: column;
+    border: 3px solid #626b7c;
+    border-radius: 29px;
+    background: #03050a;
+    box-shadow: 0 15px 45px #0009;
+    overflow: hidden;
+}
+
+.phone-notch {
+    position: absolute;
+    z-index: 2;
+    top: 9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 75px;
+    height: 17px;
+    border-radius: 0 0 12px 12px;
+    background: #03050a;
+}
+
+.phone-screen {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 19px;
+    background: white;
+}
+
+#previewFrame {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: none;
+    background: white;
+}
+
+.phone-home {
+    position: absolute;
+    z-index: 2;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 65px;
+    height: 4px;
+    border-radius: 10px;
+    background: #777;
+}
+
+.preview-footer {
+    border-top: 1px solid var(--border);
+}
+
+/* MODAL */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    background: #000b;
+}
+
+.modal-overlay.hidden {
     display: none;
 }
 
-/* =========================
-   PHONE SIMULATOR
-========================= */
+.modal-box {
+    width: min(100%, 320px);
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--panel);
+}
 
-.preview {
-    width: 50%;
-    min-width: 0;
+.modal-box h3 {
+    margin-bottom: 16px;
+}
 
-    background: #161b22;
-    border: 1px solid #30363d;
+#modalInput {
+    width: 100%;
+    padding: 11px;
+    outline: none;
+    border: 1px solid var(--border);
     border-radius: 8px;
+    background: var(--bg);
+    color: white;
+}
 
+.modal-actions {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding: 12px;
-    overflow: hidden;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 17px;
 }
 
-.preview-title {
-    font-size: 13px;
-    font-weight: bold;
-    color: #58a6ff;
-    margin-bottom: 15px;
-    flex-shrink: 0;
-}
-
-/* PHONE FRAME */
-
-.phone {
-    width: 100%;
-    max-width: 230px;
-    height: 390px;
-
-    background: #000000;
-    border: 7px solid #30363d;
-    border-radius: 30px;
-
-    overflow: hidden;
-    position: relative;
-}
-
-/* PHONE SCREEN */
-
-.phone iframe {
-    width: 100%;
-    height: 100%;
-
+.modal-actions button {
+    padding: 9px 13px;
     border: none;
-    background: white;
-
-    display: block;
+    border-radius: 7px;
 }
 
-/* =========================
-   MOBILE RESPONSIVE
-========================= */
+#cancelModalBtn {
+    background: var(--panel2);
+    color: white;
+}
 
-@media (max-width: 600px) {
+#confirmModalBtn {
+    background: var(--primary);
+    color: white;
+}
 
-    .header {
-        height: 50px;
-        padding: 0 10px;
+/* TOAST */
+
+.toast {
+    position: fixed;
+    z-index: 20;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: var(--primary);
+    color: white;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+    .topbar {
+        gap: 8px;
+        padding: 0 8px;
     }
 
-    .logo {
-        font-size: 13px;
+    .brand {
+        font-size: 12px;
+    }
+
+    .brand-icon {
+        width: 25px;
+        height: 25px;
+    }
+
+    .app-layout {
+        grid-template-columns: 150px minmax(170px, 1fr) minmax(115px, 0.7fr);
+    }
+
+    .sidebar {
+        position: relative;
+    }
+
+    .phone-frame {
+        width: 100%;
+        border-radius: 20px;
+        padding: 6px;
+    }
+
+    .phone-screen {
+        border-radius: 13px;
+    }
+
+    .phone-notch {
+        width: 45px;
+        height: 11px;
+        top: 6px;
+    }
+
+    .phone-home {
+        width: 40px;
+        height: 3px;
+    }
+
+    .editor-heading,
+    .preview-heading {
+        padding: 9px 6px;
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 430px) {
+    .app-layout {
+        grid-template-columns: 125px minmax(150px, 1fr) minmax(105px, 0.65fr);
+    }
+
+    .brand {
+        font-size: 10px;
+    }
+
+    #projectSelect {
+        max-width: 95px;
+        font-size: 10px;
     }
 
     .run-btn {
-        padding: 8px 13px;
+        padding: 8px 10px;
         font-size: 11px;
-    }
-
-    .workspace {
-        height: calc(100dvh - 50px);
-        gap: 5px;
-        padding: 5px;
-    }
-
-    .editor,
-    .preview {
-        width: 50%;
-    }
-
-    .tabs {
-        width: 100%;
-    }
-
-    .tab {
-        font-size: 10px;
-        padding: 11px 2px;
-    }
-
-    .editor textarea {
-        font-size: 10px;
-        padding: 7px;
-        line-height: 1.6;
-    }
-
-    .preview {
-        padding: 8px 4px;
-    }
-
-    .preview-title {
-        font-size: 10px;
-        margin-bottom: 12px;
-    }
-
-    .phone {
-        width: 100%;
-        height: min(65vh, 390px);
-        border-width: 4px;
-        border-radius: 20px;
-    }
-}
-
-/* =========================
-   LANDSCAPE MODE
-========================= */
-
-@media (max-height: 450px) {
-
-    .header {
-        height: 42px;
-    }
-
-    .workspace {
-        height: calc(100dvh - 42px);
-    }
-
-    .phone {
-        height: calc(100% - 5px);
-        max-width: 220px;
-    }
-
-    .preview-title {
-        margin-bottom: 5px;
     }
 }
