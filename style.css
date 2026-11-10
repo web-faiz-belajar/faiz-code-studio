@@ -1428,3 +1428,7 @@ body.light-theme #codeEditor {
 body {
     background: red !important;
 }
+/* TES CSS 2 */
+.app-shell {
+    background: red !important;
+}
