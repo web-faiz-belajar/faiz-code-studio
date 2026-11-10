@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d17">
+  <meta name="description" content="Faiz Code Studio - Mobile coding workspace">
+  <title>Faiz Code Studio 4.0</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./style.css?v=4.0">
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <button class="brand" id="homeBtn" title="Dashboard">
+      <span class="brand-mark">&lt;/&gt;</span>
+      <span class="brand-copy"><strong>FAIZ <b>CODE</b> STUDIO</strong><small>4.0 / MOBILE WORKSPACE</small></span>
+    </button>
+    <div class="topbar-right">
+      <span class="workspace-status"><i></i> LOCAL WORKSPACE</span>
+      <button class="icon-btn theme-btn" id="themeBtn" title="Ganti tema">◐</button>
+    </div>
+  </header>
+
+  <main id="dashboard" class="dashboard">
+    <section class="welcome-panel">
+      <div class="welcome-copy">
+        <span class="overline">YOUR CREATIVE WORKSPACE</span>
+        <h1>Build. Create.<br><em>Make it real.</em></h1>
+        <p>Semua ide dan project coding kamu, dalam satu tempat.</p>
+        <button class="primary-btn" id="newProjectBtn"><span>＋</span> Buat project baru</button>
+      </div>
+      <div class="welcome-art" aria-hidden="true">
+        <div class="art-orbit orbit-a"></div><div class="art-orbit orbit-b"></div>
+        <div class="art-core"><span>&lt;/&gt;</span></div>
+        <i class="art-dot dot-a"></i><i class="art-dot dot-b"></i><i class="art-dot dot-c"></i>
+      </div>
+      <div class="welcome-meta"><span>01 / CREATE</span><span>CODE YOUR IDEAS</span></div>
+    </section>
+
+    <section class="projects-section">
+      <div class="section-head">
+        <div><span class="overline">YOUR WORK</span><h2>Project workspace</h2><p>Kelola dan lanjutkan pekerjaanmu.</p></div>
+        <div class="project-count" id="projectCount">0 PROJECT</div>
+      </div>
+      <div id="projectGrid" class="project-grid"></div>
+      <div id="emptyProjects" class="empty-state">
+        <div class="empty-symbol">&lt;/&gt;</div><h3>Belum ada project</h3>
+        <p>Mulai dari project pertama dan bangun sesuatu.</p>
+        <button class="secondary-btn" id="emptyCreateBtn">＋ Buat project</button>
+      </div>
+    </section>
+    <footer class="dashboard-footer"><span>FAIZ CODE STUDIO <b>4.0</b></span><span>DESIGNED FOR MOBILE CREATORS</span></footer>
+  </main>
+
+  <main id="workspace" class="workspace hidden">
+    <section class="editor-panel">
+      <div class="workspace-head">
+        <button class="icon-btn back-btn" id="backDashboardBtn" title="Kembali ke dashboard">←</button>
+        <div class="workspace-project"><span class="overline">CURRENT PROJECT</span><strong id="currentProjectName">Project</strong></div>
+        <div class="workspace-actions">
+          <button class="icon-btn" id="searchBtn" title="Cari kode">⌕</button>
+          <button class="icon-btn" id="previewBtn" title="Buka simulator" aria-expanded="false">▣</button>
+          <button class="icon-btn run-btn" id="runBtn" title="Jalankan">▶</button>
+        </div>
+      </div>
+
+      <div class="editor-commandbar">
+        <button class="command-btn" id="fileMenuBtn"><span>☷</span><label>FILES</label></button>
+        <div class="file-location"><span>WORKSPACE</span><b>/</b><strong id="activeFilePath">index.html</strong></div>
+        <div class="command-right"><span id="saveStatus" class="save-status">SAVED</span><button class="command-btn save-command" id="saveBtn" title="Simpan">✓</button></div>
+      </div>
+
+      <div class="editor-main">
+        <aside class="file-drawer" id="fileDrawer">
+          <div class="drawer-top"><span>EXPLORER</span><button class="plain-btn" id="closeDrawerBtn">×</button></div>
+          <div class="drawer-project"><span>⌄</span><strong id="drawerProjectName">PROJECT</strong><button id="addFileBtn" title="Tambah file">＋</button></div>
+          <div id="fileList" class="file-list"></div>
+        </aside>
+        <section class="code-area">
+          <div class="tabs-bar" id="tabsBar"></div>
+          <div class="editor-wrap">
+            <div class="line-numbers" id="lineNumbers">1</div>
+            <textarea id="codeEditor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" wrap="off" aria-label="Code editor" placeholder="Tulis kode di sini..."></textarea>
+          </div>
+          <div class="editor-footer"><span id="languageLabel">HTML</span><span id="cursorPosition">LINE 1 : COL 1</span><span>UTF-8</span></div>
+        </section>
+      </div>
+      <div class="workspace-bottom"><span><i></i> READY</span><span>LOCAL STORAGE</span><span>FAIZ CODE STUDIO 4.0</span></div>
+    </section>
+
+    <section class="preview-panel" id="previewPanel">
+      <div class="preview-toolbar">
+        <div><span class="overline">LIVE ENVIRONMENT</span><strong>Device simulator</strong></div>
+        <div class="preview-actions"><button id="reloadBtn" title="Reload">↻</button><button id="fullscreenBtn" title="Fullscreen">⛶</button><button id="closePreviewBtn" title="Tutup simulator">×</button></div>
+      </div>
+      <div class="phone-stage"><div class="phone-frame"><div class="phone-camera"></div><iframe id="previewFrame" title="Simulator aplikasi" sandbox="allow-scripts allow-forms allow-modals"></iframe></div></div>
+      <div class="preview-footer"><span><i></i> PREVIEW READY</span><span>HTML / CSS / JS</span></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal hidden" id="projectModal"><div class="modal-card">
+  <div class="modal-heading"><div><span class="overline">NEW WORKSPACE</span><h2 id="projectModalTitle">Project baru</h2></div><button class="plain-btn" id="closeProjectModal">×</button></div>
+  <label for="projectNameInput">Nama project</label><input id="projectNameInput" maxlength="40" placeholder="Contoh: Website Pertama">
+  <label for="projectTemplate">Template awal</label><select id="projectTemplate"><option value="web">Website HTML, CSS, JS</option><option value="blank">Project kosong</option></select>
+  <button class="primary-btn full-btn" id="confirmProjectBtn">Buat project <span>→</span></button>
+</div></div>
+<div class="modal hidden" id="searchModal"><div class="modal-card">
+  <div class="modal-heading"><div><span class="overline">FIND IN FILE</span><h2>Cari dalam kode</h2></div><button class="plain-btn" id="closeSearchModal">×</button></div>
+  <input id="searchInput" placeholder="Masukkan kata pencarian..."><button class="primary-btn full-btn" id="confirmSearchBtn">Cari kode</button><p class="modal-hint" id="searchMessage"></p>
+</div></div>
+<div id="toast" class="toast" role="status"></div>
+<script src="./script.js?v=4.0"></script>
+</body>
+</html>
