@@ -1,7 +1,10 @@
 
-/* =================================
+/* =========================================
    FAIZ CODE STUDIO 3.0
-================================= */
+   FULL EDITOR + SIMULATOR PANEL
+========================================= */
+
+/* RESET */
 
 * {
     margin: 0;
@@ -21,6 +24,8 @@
 }
 
 body {
+    width: 100%;
+    height: 100vh;
     height: 100dvh;
     overflow: hidden;
     background: var(--bg);
@@ -28,7 +33,15 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* TOPBAR */
+button,
+select {
+    font: inherit;
+    cursor: pointer;
+}
+
+/* =========================================
+   TOPBAR
+========================================= */
 
 .topbar {
     height: 65px;
@@ -78,11 +91,6 @@ body {
     gap: 9px;
 }
 
-button, select {
-    font: inherit;
-    cursor: pointer;
-}
-
 #projectSelect {
     width: 120px;
     padding: 10px;
@@ -113,25 +121,35 @@ button, select {
     color: #062319;
 }
 
-/* MAIN WORKSPACE */
+/* =========================================
+   MAIN WORKSPACE
+========================================= */
 
 .workspace {
+    position: relative;
+    width: 100%;
     height: calc(100dvh - 65px);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 280px;
+    grid-template-columns: minmax(0, 1fr);
     overflow: hidden;
 }
 
-/* EDITOR */
+/* =========================================
+   EDITOR PANEL
+========================================= */
 
 .editor-panel {
     position: relative;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    min-width: 0;
     overflow: hidden;
     background: #0b1120;
 }
+
+/* EDITOR TOOLBAR */
 
 .editor-toolbar {
     height: 48px;
@@ -147,6 +165,7 @@ button, select {
 .folder-toggle {
     width: 33px;
     height: 33px;
+    flex-shrink: 0;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--panel2);
@@ -176,20 +195,31 @@ button, select {
 }
 
 .save-btn {
-    margin-left: auto;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
     border: 0;
-    border-radius: 8px;
+    border-radius: 9px;
     background: #173a35;
     color: var(--green);
+    font-size: 17px;
 }
 
-/* FILE DRAWER */
+#togglePreviewBtn {
+    margin-left: auto;
+}
+
+#saveBtn {
+    margin-left: 0;
+}
+
+/* =========================================
+   FILE DRAWER
+========================================= */
 
 .file-drawer {
     position: absolute;
-    z-index: 10;
+    z-index: 25;
     top: 48px;
     left: 0;
     bottom: 0;
@@ -201,7 +231,9 @@ button, select {
     box-shadow: 15px 0 35px #0008;
     transform: translateX(-105%);
     visibility: hidden;
-    transition: transform .22s ease, visibility .22s;
+    transition:
+        transform .22s ease,
+        visibility .22s;
 }
 
 .file-drawer.open {
@@ -280,7 +312,9 @@ button, select {
     color: var(--green);
 }
 
-/* TREE */
+/* =========================================
+   FILE TREE
+========================================= */
 
 .tree-row {
     display: flex;
@@ -342,7 +376,9 @@ button, select {
     font-size: 12px;
 }
 
-/* EDITOR TABS */
+/* =========================================
+   EDITOR TABS
+========================================= */
 
 .editor-tabs {
     height: 39px;
@@ -379,7 +415,9 @@ button, select {
     color: var(--muted);
 }
 
-/* CODE AREA */
+/* =========================================
+   CODE AREA
+========================================= */
 
 .code-area {
     flex: 1;
@@ -427,7 +465,9 @@ button, select {
     opacity: .65;
 }
 
-/* EDITOR STATUS */
+/* =========================================
+   EDITOR STATUS
+========================================= */
 
 .editor-status {
     min-height: 27px;
@@ -441,16 +481,33 @@ button, select {
     font-size: 9px;
 }
 
-/* PHONE PREVIEW */
+/* =========================================
+   PHONE PREVIEW PANEL
+========================================= */
 
 .preview-panel {
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(320px, 90%);
     min-width: 0;
-    display: flex;
+    display: none;
     flex-direction: column;
     overflow: hidden;
     background: #10182a;
     border-left: 1px solid var(--border);
+    box-shadow: -15px 0 35px #0008;
 }
+
+/* SIMULATOR OPEN */
+
+.workspace.preview-open .preview-panel {
+    display: flex;
+}
+
+/* PREVIEW TOOLBAR */
 
 .preview-toolbar {
     height: 48px;
@@ -491,6 +548,8 @@ button, select {
     font-size: 17px;
 }
 
+/* DEVICE STAGE */
+
 .device-stage {
     flex: 1;
     min-height: 0;
@@ -500,7 +559,12 @@ button, select {
     justify-content: center;
     overflow: auto;
     background:
-        radial-gradient(ellipse at center, #202d48 0%, #111a2c 65%, #0d1423 100%);
+        radial-gradient(
+            ellipse at center,
+            #202d48 0%,
+            #111a2c 65%,
+            #0d1423 100%
+        );
 }
 
 /* PHONE FRAME */
@@ -514,6 +578,7 @@ button, select {
     padding: 7px;
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
     border: 3px solid #65728a;
     border-radius: 34px;
     background: #05080e;
@@ -576,6 +641,8 @@ button, select {
     background: #a5adbb;
 }
 
+/* PREVIEW STATUS */
+
 .preview-status {
     min-height: 28px;
     padding: 7px 10px;
@@ -587,12 +654,15 @@ button, select {
     border-top: 1px solid var(--border);
 }
 
-/* FULLSCREEN PREVIEW */
+/* =========================================
+   FULLSCREEN PREVIEW
+========================================= */
 
 .preview-panel.fullscreen {
     position: fixed;
     z-index: 30;
     inset: 0;
+    width: 100%;
     border: 0;
 }
 
@@ -601,7 +671,9 @@ button, select {
     height: min(88vh, 700px);
 }
 
-/* MODAL */
+/* =========================================
+   MODAL
+========================================= */
 
 .modal-overlay {
     position: fixed;
@@ -699,7 +771,9 @@ button, select {
     color: white;
 }
 
-/* TOAST */
+/* =========================================
+   TOAST
+========================================= */
 
 .toast {
     position: fixed;
@@ -724,15 +798,220 @@ button, select {
     transform: translate(-50%, 0);
 }
 
-/* RESPONSIVE */
+/* =========================================
+   WELCOME SCREEN
+========================================= */
 
-.phone-frame {
-    width: 100%;
-    height: min(100%, 560px);
-    padding: 5px;
-    border-radius: 23px;
-    border-width: 2px;
+.welcome-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    background: #020304;
+    color: white;
+    font-family: Georgia, serif;
 }
+
+.welcome-grid {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    perspective: 350px;
+    background:
+        radial-gradient(
+            ellipse at center,
+            #101b29 0%,
+            #030507 65%
+        );
+}
+
+/* FUTURISTIC FLOOR */
+
+.welcome-grid::before {
+    content: "";
+    position: absolute;
+    left: -60%;
+    right: -60%;
+    top: 42%;
+    height: 100%;
+    transform: rotateX(62deg);
+    transform-origin: top center;
+
+    background-image:
+        linear-gradient(#9bcaff55 1px, transparent 1px),
+        linear-gradient(90deg, #9bcaff55 1px, transparent 1px);
+
+    background-size: 45px 35px;
+
+    mask-image: linear-gradient(
+        to bottom,
+        transparent,
+        black 15%,
+        black 85%,
+        transparent
+    );
+
+    animation: gridMove 8s linear infinite;
+}
+
+/* PERSPECTIVE LIGHT */
+
+.welcome-grid::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+
+    background:
+        repeating-conic-gradient(
+            from 0deg at 50% 48%,
+            transparent 0deg 8deg,
+            #a8d5ff35 8.2deg 8.5deg,
+            transparent 8.8deg 16deg
+        );
+
+    mask-image: linear-gradient(
+        to bottom,
+        black,
+        transparent 70%
+    );
+
+    animation: lightPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes gridMove {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 0 70px;
+    }
+}
+
+@keyframes lightPulse {
+    from {
+        opacity: .35;
+    }
+
+    to {
+        opacity: .9;
+    }
+}
+
+/* WELCOME CONTENT */
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 750px);
+    min-height: 100%;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.welcome-brand {
+    margin-top: 5px;
+    font-family: Arial, sans-serif;
+    font-size: clamp(30px, 7vw, 58px);
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 5px;
+    text-align: center;
+    text-shadow:
+        0 0 10px #ffffff55,
+        0 0 30px #74baff55;
+}
+
+.project-heading {
+    margin-top: 55px;
+    margin-bottom: 15px;
+    font-size: clamp(25px, 5vw, 38px);
+    font-weight: bold;
+    text-transform: lowercase;
+    text-shadow: 0 0 15px #ffffff55;
+}
+
+/* PROJECT LIST */
+
+.welcome-project-list {
+    width: min(100%, 500px);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.welcome-project-item {
+    width: 100%;
+    padding: 11px 15px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: #ffffff08;
+    color: white;
+    font-family: Georgia, serif;
+    font-size: clamp(20px, 4.5vw, 31px);
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.welcome-project-item:active {
+    background: #8bc5ff25;
+    border-color: #9bcaff88;
+    transform: scale(.97);
+}
+
+.welcome-project-item:hover {
+    background: #8bc5ff18;
+    border-color: #9bcaff55;
+}
+
+/* NEW PROJECT BUTTON */
+
+.welcome-new-project {
+    margin-top: 25px;
+    padding: 13px 22px;
+    border: 1px solid #8abaff88;
+    border-radius: 10px;
+    background: #12243b;
+    color: #d9eaff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.welcome-new-project:active {
+    transform: scale(.96);
+    background: #24476c;
+}
+
+.welcome-footer {
+    margin-top: auto;
+    padding-top: 35px;
+    color: #72859d;
+    font-family: Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+/* =========================================
+   RESPONSIVE TABLET & MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+    .topbar {
+        height: 54px;
+        padding: 0 10px;
+        gap: 6px;
+    }
 
     .brand {
         gap: 6px;
@@ -770,13 +1049,17 @@ button, select {
 
     .workspace {
         height: calc(100dvh - 54px);
-        grid-template-columns: minmax(0, 1fr) minmax(112px, 29%);
     }
 
-    .editor-toolbar,
-    .preview-toolbar {
+    .editor-toolbar {
         height: 42px;
         padding: 0 7px;
+        gap: 7px;
+    }
+
+    .preview-toolbar {
+        height: 42px;
+        padding: 0 8px;
     }
 
     .breadcrumb {
@@ -784,8 +1067,17 @@ button, select {
         gap: 4px;
     }
 
+    .save-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .preview-panel {
+        width: min(320px, 90%);
+    }
+
     .phone-frame {
-        width: 100%;
+        width: min(100%, 260px);
         height: min(100%, 410px);
         padding: 5px;
         border-radius: 23px;
@@ -842,9 +1134,17 @@ button, select {
         padding: 0 7px;
         font-size: 9px;
     }
+
+    .preview-panel.fullscreen .phone-frame {
+        width: min(75vw, 300px);
+        height: min(88dvh, 650px);
+    }
 }
 
+/* SMALL MOBILE */
+
 @media (max-width: 380px) {
+
     .brand strong {
         font-size: 9px;
     }
@@ -853,209 +1153,52 @@ button, select {
         display: none;
     }
 
+    #projectSelect {
+        width: 78px;
+    }
+
+    .preview-panel {
+        width: 92%;
+    }
+}
+
+/* =========================================
+   LANDSCAPE
+========================================= */
+
+@media (orientation: landscape) and (max-height: 500px) {
+
+    .topbar {
+        height: 48px;
+    }
+
     .workspace {
-        grid-template-columns: minmax(0, 1fr) 112px;
+        height: calc(100dvh - 48px);
     }
-}
 
-/* ==================================
-   WELCOME SCREEN - KODE STUDIO
-================================== */
-
-.welcome-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    background: #020304;
-    color: white;
-    font-family: Georgia, serif;
-}
-
-.welcome-grid {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    perspective: 350px;
-    background:
-        radial-gradient(ellipse at center, #101b29 0%, #030507 65%);
-}
-
-/* GARIS LANTAI FUTURISTIK */
-
-.welcome-grid::before {
-    content: "";
-    position: absolute;
-    left: -60%;
-    right: -60%;
-    top: 42%;
-    height: 100%;
-    transform: rotateX(62deg);
-    transform-origin: top center;
-
-    background-image:
-        linear-gradient(#9bcaff55 1px, transparent 1px),
-        linear-gradient(90deg, #9bcaff55 1px, transparent 1px);
-
-    background-size: 45px 35px;
-    mask-image: linear-gradient(
-        to bottom,
-        transparent,
-        black 15%,
-        black 85%,
-        transparent
-    );
-
-    animation: gridMove 8s linear infinite;
-}
-
-/* GARIS PERSPEKTIF ATAS */
-
-.welcome-grid::after {
-    content: "";
-    position: absolute;
-    inset: -30%;
-    background:
-        repeating-conic-gradient(
-            from 0deg at 50% 48%,
-            transparent 0deg 8deg,
-            #a8d5ff35 8.2deg 8.5deg,
-            transparent 8.8deg 16deg
-        );
-
-    mask-image: linear-gradient(
-        to bottom,
-        black,
-        transparent 70%
-    );
-
-    animation: lightPulse 4s ease-in-out infinite alternate;
-}
-
-@keyframes gridMove {
-    from {
-        background-position: 0 0;
+    .editor-toolbar,
+    .preview-toolbar {
+        height: 38px;
     }
-    to {
-        background-position: 0 70px;
+
+    .phone-frame {
+        width: min(100%, 220px);
+        height: min(100%, 310px);
     }
-}
 
-@keyframes lightPulse {
-    from {
-        opacity: .35;
+    .device-stage {
+        padding: 5px;
     }
-    to {
-        opacity: .9;
+
+    .preview-panel {
+        width: min(300px, 48%);
     }
-}
 
-/* KONTEN */
+    .preview-panel.fullscreen .phone-frame {
+        width: min(45vw, 280px);
+        height: 85dvh;
+    }
 
-.welcome-content {
-    position: relative;
-    z-index: 2;
-    width: min(100%, 750px);
-    min-height: 100%;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.welcome-brand {
-    margin-top: 5px;
-    font-family: Arial, sans-serif;
-    font-size: clamp(30px, 7vw, 58px);
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: 5px;
-    text-align: center;
-    text-shadow:
-        0 0 10px #ffffff55,
-        0 0 30px #74baff55;
-}
-
-.project-heading {
-    margin-top: 55px;
-    margin-bottom: 15px;
-    font-size: clamp(25px, 5vw, 38px);
-    font-weight: bold;
-    text-transform: lowercase;
-    text-shadow: 0 0 15px #ffffff55;
-}
-
-/* DAFTAR PROJECT */
-
-.welcome-project-list {
-    width: min(100%, 500px);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-}
-
-.welcome-project-item {
-    width: 100%;
-    padding: 11px 15px;
-    border: 1px solid transparent;
-    border-radius: 9px;
-    background: #ffffff08;
-    color: white;
-    font-family: Georgia, serif;
-    font-size: clamp(20px, 4.5vw, 31px);
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.welcome-project-item:active {
-    background: #8bc5ff25;
-    border-color: #9bcaff88;
-    transform: scale(.97);
-}
-
-.welcome-project-item:hover {
-    background: #8bc5ff18;
-    border-color: #9bcaff55;
-}
-
-/* TOMBOL PROJECT BARU */
-
-.welcome-new-project {
-    margin-top: 25px;
-    padding: 13px 22px;
-    border: 1px solid #8abaff88;
-    border-radius: 10px;
-    background: #12243b;
-    color: #d9eaff;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    cursor: pointer;
-}
-
-.welcome-new-project:active {
-    transform: scale(.96);
-    background: #24476c;
-}
-
-.welcome-footer {
-    margin-top: auto;
-    padding-top: 35px;
-    color: #72859d;
-    font-family: Arial, sans-serif;
-    font-size: 9px;
-    letter-spacing: 2px;
-    text-align: center;
-}
-
-/* LAYAR LANDSCAPE */
-
-@media (orientation: landscape) {
     .welcome-content {
         padding-top: 12px;
         padding-bottom: 12px;
@@ -1082,5 +1225,21 @@ button, select {
 
     .welcome-footer {
         padding-top: 12px;
+    }
+}
+
+/* =========================================
+   TOUCH DEVICE
+========================================= */
+
+@media (hover: none) {
+
+    button {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .tree-entry:hover,
+    .welcome-project-item:hover {
+        background: transparent;
     }
 }
