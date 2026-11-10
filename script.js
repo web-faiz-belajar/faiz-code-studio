@@ -746,7 +746,44 @@ function runCode() {
     );
 
     const styleTag = "<style>" + escapeStyle(css) + "</style>";
-    const scriptTag = "<script>" + escapeScript(js) + "<\/script>";
+    const diagnosticScript = `
+window.addEventListener("error", function(event) {
+    const box = document.createElement("pre");
+
+    box.style.cssText = "
+        position:fixed;
+        z-index:999999;
+        bottom:10px;
+        left:10px;
+        right:10px;
+        padding:12px;
+        background:#8b1e2d;
+        color:white;
+        font-size:12px;
+        white-space:pre-wrap;
+        overflow-wrap:anywhere;
+    ";
+
+    box.textContent =
+        "ERROR: " + event.message +
+        "\\\\nFile: " + event.filename +
+        "\\\\nBaris: " + event.lineno +
+        "\\\\nKolom: " + event.colno;
+
+    document.body.appendChild(box);
+});
+
+window.addEventListener("unhandledrejection", function(event) {
+    alert("Promise Error: " + String(event.reason));
+});
+`;
+
+const scriptTag =
+    "<script>" +
+    diagnosticScript +
+    "\\n" +
+    escapeScript(js) +
+    "<\\/script>";
 
     if (/<\/head>/i.test(html)) {
         html = html.replace(/<\/head>/i, styleTag + "</head>");
