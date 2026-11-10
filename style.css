@@ -1424,11 +1424,3 @@ body.light-theme #codeEditor {
         transition-duration: .01ms !important;
     }
 }
-/* TES CSS */
-body {
-    background: red !important;
-}
-/* TES CSS 2 */
-.app-shell {
-    background: red !important;
-}
