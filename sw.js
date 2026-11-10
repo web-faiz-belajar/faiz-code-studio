@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "faiz-code-studio-v1";
+const CACHE_NAME = "faiz-code-studio-v2";
 
 const APP_FILES = [
     "./",
@@ -25,13 +25,11 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
     event.waitUntil(
         caches.keys()
-            .then(keys => {
-                return Promise.all(
-                    keys
-                        .filter(key => key !== CACHE_NAME)
-                        .map(key => caches.delete(key))
-                );
-            })
+            .then(keys => Promise.all(
+                keys
+                    .filter(key => key !== CACHE_NAME)
+                    .map(key => caches.delete(key))
+            ))
             .then(() => self.clients.claim())
     );
 });
@@ -52,9 +50,7 @@ self.addEventListener("fetch", event => {
                     const copy = response.clone();
 
                     caches.open(CACHE_NAME)
-                        .then(cache => {
-                            cache.put(event.request, copy);
-                        });
+                        .then(cache => cache.put(event.request, copy));
                 }
 
                 return response;
@@ -73,7 +69,7 @@ self.addEventListener("fetch", event => {
                             {
                                 status: 503,
                                 headers: {
-                                    "Content-Type": "text/plain"
+                                    "Content-Type": "text/plain; charset=utf-8"
                                 }
                             }
                         );
