@@ -1,78 +1,1620 @@
-/* FAIZ CODE STUDIO 4.0 — PROJECTS / EXPLORER / EDITOR / SIMULATOR */
+
+/* =========================================================
+   FAIZ CODE STUDIO 5.0
+   PREMIUM EDITION
+   PROJECT MANAGER + EDITOR + SIMULATOR
+========================================================= */
+
 "use strict";
-const $ = id => document.getElementById(id);
-const codeEditor = $("codeEditor");
-const STORAGE_KEY = "faiz_code_studio_v2"; // Keep v2 key to preserve existing projects.
+
+/* =========================
+   CONFIGURATION
+========================= */
+
+const STORAGE_KEY = "faiz_code_studio_v2";
 const OLD_STORAGE_KEY = "faiz_code_studio_v1";
-const defaultHTML = `<!DOCTYPE html>
+const NEW_STORAGE_KEY = "faiz_code_studio_v5";
+
+const $ = id => document.getElementById(id);
+
+const DEFAULT_HTML = `<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aplikasi Saya</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Halo Dunia!</h1>
-<p>Selamat datang di aplikasi pertama saya.</p>
-<button onclick="halo()">Klik Saya</button>
+    <main>
+        <h1>Hello World!</h1>
+        <p>Welcome to my project.</p>
+        <button id="helloBtn">Click Me</button>
+    </main>
+    <script src="script.js"><\/script>
 </body>
 </html>`;
-const defaultCSS = `body { font-family: Arial, sans-serif; text-align: center; padding: 30px; background: #f1f5f9; }
-h1 { color: #5267e8; }
-button { padding: 12px 20px; border: 0; border-radius: 8px; background: #5267e8; color: white; }`;
-const defaultJS = `function halo() { alert("JavaScript berhasil berjalan!"); }`;
-let projects=[], activeProjectId=null, activeFile=null, openFiles=[], autoSaveTimer=null, toastTimer=null;
-function makeId(){return "project_"+Date.now()+"_"+Math.random().toString(36).slice(2,8)}
-function escapeHTML(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function getExtension(n){const p=n.split(".");return p.length>1?p.pop().toLowerCase():"txt"}
-function getFileIcon(n){return ({html:"🌐",htm:"🌐",css:"🎨",js:"⚡",json:"📋",txt:"📄"})[getExtension(n)]||"📄"}
-function getLanguage(n){return ({html:"HTML",htm:"HTML",css:"CSS",js:"JAVASCRIPT",json:"JSON",txt:"TEXT"})[getExtension(n)]||"TEXT"}
-function getActiveProject(){return projects.find(p=>p.id===activeProjectId)||null}
-function createDefaultFiles(t="web"){return t==="blank"?{"index.html":"","style.css":"","script.js":""}:{"index.html":defaultHTML,"style.css":defaultCSS,"script.js":defaultJS}}
-function showToast(message){const el=$("toast");el.textContent=message;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),2300)}
-function saveAll(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({version:4,projects,activeProjectId,theme:document.body.classList.contains("light-theme")?"light":"dark"}));return true}catch(e){console.error(e);showToast("Penyimpanan penuh atau tidak tersedia.");return false}}
-function loadAll(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const d=JSON.parse(raw);if(Array.isArray(d.projects)){projects=d.projects.filter(p=>p&&typeof p.id==="string"&&typeof p.name==="string"&&p.files&&typeof p.files==="object").map(p=>({id:p.id,name:p.name,files:p.files,createdAt:p.createdAt||Date.now(),updatedAt:p.updatedAt||Date.now()}));activeProjectId=d.activeProjectId||null;if(d.theme==="light")document.body.classList.add("light-theme");return}}migrateOldProject()}catch(e){console.error("Load error:",e);projects=[]}}
-function migrateOldProject(){try{const raw=localStorage.getItem(OLD_STORAGE_KEY);if(raw){const d=JSON.parse(raw);if(d&&typeof d.html==="string"&&typeof d.css==="string"&&typeof d.js==="string"){const p={id:makeId(),name:"Project Lama",files:{"index.html":d.html,"style.css":d.css,"script.js":d.js},createdAt:Date.now(),updatedAt:Date.now()};projects.push(p);activeProjectId=p.id;saveAll();showToast("Project lama berhasil dipindahkan.");return}}}catch(e){console.error(e)}projects=[]}
-function renderDashboard(){const grid=$("projectGrid"),empty=$("emptyProjects");$("projectCount").textContent=projects.length+" PROJECT";grid.innerHTML="";empty.classList.toggle("hidden",projects.length>0);projects.forEach(p=>{const card=document.createElement("article");card.className="project-card";card.innerHTML=`<div class="project-card-top"><div class="project-symbol">&lt;/&gt;</div><button class="project-menu" data-action="menu" aria-label="Menu project">•••</button></div><h3>${escapeHTML(p.name)}</h3><p>${Object.keys(p.files).length} file · Project lokal</p><div class="project-card-bottom"><span>FAIZ WORKSPACE</span><span class="open-project">OPEN →</span></div>`;card.addEventListener("click",e=>{if(e.target.closest("[data-action=menu]")){projectMenu(p.id);return}openProject(p.id)});grid.appendChild(card)})}
-function projectMenu(id){const p=projects.find(x=>x.id===id);if(!p)return;const c=prompt("Project: "+p.name+"\n\n1 = Ganti nama\n2 = Hapus project");if(c==="1"){const n=prompt("Nama project baru:",p.name);if(n&&n.trim()){p.name=n.trim();p.updatedAt=Date.now();saveAll();renderDashboard();if(activeProjectId===id){$("currentProjectName").textContent=p.name;$("drawerProjectName").textContent=p.name}showToast("Nama project diperbarui.")}}else if(c==="2"&&confirm("Hapus project "+p.name+"?")){projects=projects.filter(x=>x.id!==id);if(activeProjectId===id){activeProjectId=null;goDashboard()}saveAll();renderDashboard();showToast("Project dihapus.")}}
-function showProjectModal(){$("projectNameInput").value="";$("projectTemplate").value="web";$("projectModal").classList.remove("hidden");$("projectNameInput").focus()}
-function hideProjectModal(){$("projectModal").classList.add("hidden")}
-function createProject(){const name=$("projectNameInput").value.trim();if(!name){showToast("Masukkan nama project.");return}const p={id:makeId(),name,files:createDefaultFiles($("projectTemplate").value),createdAt:Date.now(),updatedAt:Date.now()};projects.unshift(p);activeProjectId=p.id;saveAll();hideProjectModal();renderDashboard();openProject(p.id);showToast("Project berhasil dibuat.")}
-function openProject(id){const p=projects.find(x=>x.id===id);if(!p)return;activeProjectId=id;if(!Object.keys(p.files).length)p.files["index.html"]="";openFiles=Object.keys(p.files);activeFile=openFiles.includes("index.html")?"index.html":openFiles[0];$("dashboard").classList.add("hidden");$("workspace").classList.remove("hidden");$("workspace").classList.remove("preview-open");$("currentProjectName").textContent=p.name;$("drawerProjectName").textContent=p.name;renderFiles();renderTabs();loadEditor();saveAll()}
-function goDashboard(){saveCurrentFile();$("workspace").classList.add("hidden");$("dashboard").classList.remove("hidden");closeSimulator();fileDrawerClose();renderDashboard();saveAll()}
-$("homeBtn").addEventListener("click",goDashboard);$("backDashboardBtn").addEventListener("click",goDashboard);
-function renderFiles(){const p=getActiveProject();if(!p)return;$("drawerProjectName").textContent=p.name;const list=$("fileList");list.innerHTML="";Object.keys(p.files).forEach(n=>{const b=document.createElement("button");b.className="file-item"+(n===activeFile?" active":"");b.innerHTML=`<span>${getFileIcon(n)}</span><span class="file-name">${escapeHTML(n)}</span><span class="file-more">⋮</span>`;b.addEventListener("click",e=>{if(e.target.closest(".file-more")){fileMenu(n);return}switchFile(n);fileDrawerClose()});list.appendChild(b)})}
-function fileDrawerClose(){$("fileDrawer").classList.remove("open")}
-$("fileMenuBtn").addEventListener("click",()=>$("fileDrawer").classList.toggle("open"));$("closeDrawerBtn").addEventListener("click",fileDrawerClose);
-function addFile(){const p=getActiveProject();if(!p)return;const n=prompt("Nama file baru:\nContoh: about.html atau style.css");if(!n)return;const clean=n.trim();if(!/^[a-zA-Z0-9._-]+$/.test(clean)){showToast("Nama file tidak valid.");return}if(Object.prototype.hasOwnProperty.call(p.files,clean)){showToast("File sudah ada.");return}p.files[clean]="";openFiles.push(clean);p.updatedAt=Date.now();saveAll();switchFile(clean);renderFiles();showToast("File berhasil dibuat.")}
-$("addFileBtn").addEventListener("click",addFile);
-function fileMenu(name){const p=getActiveProject();if(!p)return;const c=prompt("File: "+name+"\n\n1 = Ganti nama\n2 = Hapus file");if(c==="1"){const n=prompt("Nama file baru:",name);if(!n)return;const clean=n.trim();if(!/^[a-zA-Z0-9._-]+$/.test(clean)){showToast("Nama file tidak valid.");return}if(Object.prototype.hasOwnProperty.call(p.files,clean)){showToast("Nama file sudah digunakan.");return}p.files[clean]=p.files[name];delete p.files[name];openFiles=openFiles.map(f=>f===name?clean:f);if(activeFile===name)activeFile=clean;saveAll();renderFiles();renderTabs();loadEditor();showToast("Nama file diperbarui.")}else if(c==="2"){if(Object.keys(p.files).length<=1){showToast("Project harus memiliki minimal satu file.");return}if(!confirm("Hapus file "+name+"?"))return;delete p.files[name];openFiles=openFiles.filter(f=>f!==name);if(activeFile===name)activeFile=openFiles[0];saveAll();renderFiles();renderTabs();loadEditor();showToast("File dihapus.")}}
-function renderTabs(){const bar=$("tabsBar");bar.innerHTML="";openFiles.forEach(n=>{const b=document.createElement("button");b.className="editor-tab"+(n===activeFile?" active":"");b.innerHTML=`<span>${getFileIcon(n)}</span><span>${escapeHTML(n)}</span>`;b.addEventListener("click",()=>switchFile(n));bar.appendChild(b)})}
-function switchFile(n){const p=getActiveProject();if(!p||p.files[n]===undefined)return;saveCurrentFile();activeFile=n;if(!openFiles.includes(n))openFiles.push(n);loadEditor();renderTabs();renderFiles()}
-function loadEditor(){const p=getActiveProject();if(!p)return;codeEditor.value=p.files[activeFile]||"";$("activeFilePath").textContent=activeFile;$("languageLabel").textContent=getLanguage(activeFile);updateLineNumbers();updateCursor();$("saveStatus").textContent="SAVED"}
-function saveCurrentFile(){const p=getActiveProject();if(!p||!activeFile||!codeEditor)return;p.files[activeFile]=codeEditor.value;p.updatedAt=Date.now()}
-function saveEverything(){saveCurrentFile();if(saveAll())$("saveStatus").textContent="SAVED"}
-function scheduleAutoSave(){$("saveStatus").textContent="SAVING...";clearTimeout(autoSaveTimer);autoSaveTimer=setTimeout(()=>{saveEverything()},500)}
-codeEditor.addEventListener("input",()=>{saveCurrentFile();updateLineNumbers();updateCursor();scheduleAutoSave()});
-function updateLineNumbers(){const count=codeEditor.value.split("\n").length;$("lineNumbers").textContent=Array.from({length:count},(_,i)=>i+1).join("\n")}
-codeEditor.addEventListener("scroll",()=>$("lineNumbers").scrollTop=codeEditor.scrollTop);
-function updateCursor(){const before=codeEditor.value.slice(0,codeEditor.selectionStart),lines=before.split("\n");$("cursorPosition").textContent=`LINE ${lines.length} : COL ${lines[lines.length-1].length+1}`}
-["click","keyup","select"].forEach(ev=>codeEditor.addEventListener(ev,updateCursor));
-codeEditor.addEventListener("keydown",e=>{if(e.key==="Tab"){e.preventDefault();const s=codeEditor.selectionStart,en=codeEditor.selectionEnd;codeEditor.setRangeText("    ",s,en,"end");saveCurrentFile();updateLineNumbers();updateCursor();scheduleAutoSave()}});
-$("saveBtn").addEventListener("click",()=>{saveEverything();showToast("Project berhasil disimpan.")});
-function openSearch(){$("searchInput").value="";$("searchMessage").textContent="";$("searchModal").classList.remove("hidden");$("searchInput").focus()}
-$("searchBtn").addEventListener("click",openSearch);$("closeSearchModal").addEventListener("click",()=>$("searchModal").classList.add("hidden"));
-function searchCode(){const q=$("searchInput").value;if(!q){$("searchMessage").textContent="Masukkan kata pencarian.";return}const content=codeEditor.value,index=content.toLowerCase().indexOf(q.toLowerCase());if(index<0){$("searchMessage").textContent="Tidak ditemukan di file ini.";return}codeEditor.focus();codeEditor.setSelectionRange(index,index+q.length);const line=content.slice(0,index).split("\n").length;codeEditor.scrollTop=Math.max(0,(line-3)*24.7);updateCursor();$("searchMessage").textContent="Ditemukan pada baris "+line}
-$("confirmSearchBtn").addEventListener("click",searchCode);
-function buildPreview(){const p=getActiveProject();if(!p)return "";let html=p.files["index.html"]||"",css=p.files["style.css"]||"",js=p.files["script.js"]||"";const style=`<style>\n${css}\n</style>`;const script=`<script>\n${js}\n<\/script>`;if(/<\/head\s*>/i.test(html))html=html.replace(/<\/head\s*>/i,style+"</head>");else html=style+html;if(/<\/body\s*>/i.test(html))html=html.replace(/<\/body\s*>/i,script+"</body>");else html+=script;return html}
-function runCode(){saveEverything();const p=getActiveProject();if(!p){showToast("Buka project terlebih dahulu.");return}if(!p.files["index.html"]){showToast("File index.html belum tersedia.");return}$("previewFrame").srcdoc=buildPreview();showToast("Preview berhasil diperbarui.")}
-function openSimulator(){const w=$("workspace");w.classList.add("preview-open");$("previewBtn").setAttribute("aria-expanded","true");$("previewBtn").title="Tutup simulator";runCode()}
-function closeSimulator(){$("workspace").classList.remove("preview-open");$("previewBtn").setAttribute("aria-expanded","false");$("previewBtn").title="Buka simulator"}
-$("runBtn").addEventListener("click",()=>openSimulator());$("reloadBtn").addEventListener("click",runCode);$("previewBtn").addEventListener("click",()=>{$("workspace").classList.contains("preview-open")?closeSimulator():openSimulator()});$("closePreviewBtn").addEventListener("click",closeSimulator);
-$("fullscreenBtn").addEventListener("click",async()=>{const panel=$("previewPanel");try{if(!document.fullscreenElement)await panel.requestFullscreen();else await document.exitFullscreen()}catch(e){showToast("Fullscreen tidak didukung browser ini.")}});
-$("newProjectBtn").addEventListener("click",showProjectModal);$("emptyCreateBtn").addEventListener("click",showProjectModal);$("closeProjectModal").addEventListener("click",hideProjectModal);$("confirmProjectBtn").addEventListener("click",createProject);
-$("projectNameInput").addEventListener("keydown",e=>{if(e.key==="Enter")createProject()});$("searchInput").addEventListener("keydown",e=>{if(e.key==="Enter")searchCode()});
-$("themeBtn").addEventListener("click",()=>{document.body.classList.toggle("light-theme");saveAll()});
-loadAll();renderDashboard();
-if("serviceWorker"in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=4.0").catch(e=>console.error("Service Worker:",e)))}
-window.addEventListener("pagehide",()=>{saveCurrentFile();saveAll()});
+
+const DEFAULT_CSS = `* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: #101827;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+main {
+    text-align: center;
+    padding: 35px;
+}
+
+h1 {
+    color: #8b78ff;
+}
+
+button {
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 10px;
+    background: #8975ff;
+    color: white;
+    cursor: pointer;
+}`;
+
+const DEFAULT_JS = `const button = document.getElementById("helloBtn");
+
+button.addEventListener("click", () => {
+    alert("Hello from Faiz Code Studio!");
+});`;
+
+/* =========================
+   APPLICATION STATE
+========================= */
+
+let projects = [];
+let activeProjectId = null;
+let activeFile = null;
+let openFiles = [];
+
+let currentPanel = "terminal";
+let currentTheme = "dark";
+let editorFontSize = 14;
+
+let saveTimer = null;
+let toastTimer = null;
+let searchResults = [];
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const dashboard = $("dashboard");
+const workspace = $("workspace");
+
+const projectGrid = $("projectGrid");
+const projectCount = $("projectCount");
+const emptyProjects = $("emptyProjects");
+
+const codeEditor = $("codeEditor");
+const lineNumbers = $("lineNumbers");
+
+const previewPanel = $("previewPanel");
+const previewFrame = $("previewFrame");
+
+const fileDrawer = $("fileDrawer");
+const fileList = $("fileList");
+
+const tabsBar = $("tabsBar");
+
+const toastElement = $("toast");
+
+/* =========================
+   UTILITIES
+========================= */
+
+function createId() {
+    return "project_" + Date.now() + "_" +
+        Math.random().toString(36).slice(2, 8);
+}
+
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
+}
+
+function getActiveProject() {
+    return projects.find(project => project.id === activeProjectId);
+}
+
+function getExtension(filename) {
+    return filename.split(".").pop().toLowerCase();
+}
+
+function getLanguage(filename) {
+    const extension = getExtension(filename);
+
+    const languages = {
+        html: "HTML",
+        htm: "HTML",
+        css: "CSS",
+        js: "JAVASCRIPT",
+        json: "JSON",
+        txt: "TEXT",
+        md: "MARKDOWN",
+        svg: "SVG",
+        xml: "XML"
+    };
+
+    return languages[extension] || "TEXT";
+}
+
+function getFileIcon(filename) {
+    const extension = getExtension(filename);
+
+    const icons = {
+        html: "🌐",
+        htm: "🌐",
+        css: "🎨",
+        js: "⚡",
+        json: "📋",
+        md: "📝",
+        txt: "📄",
+        svg: "💠"
+    };
+
+    return icons[extension] || "📄";
+}
+
+function showToast(message) {
+    if (!toastElement) return;
+
+    toastElement.textContent = message;
+    toastElement.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toastElement.classList.remove("show");
+    }, 2500);
+}
+
+/* =========================
+   PROJECT DATA
+========================= */
+
+function createDefaultFiles(template = "html") {
+    if (template === "blank") {
+        return {
+            "index.html": "",
+            "style.css": "",
+            "script.js": ""
+        };
+    }
+
+    return {
+        "index.html": DEFAULT_HTML,
+        "style.css": DEFAULT_CSS,
+        "script.js": DEFAULT_JS
+    };
+}
+
+function normalizeProject(project) {
+    if (!project || typeof project !== "object") {
+        return null;
+    }
+
+    const files = {};
+
+    if (project.files && typeof project.files === "object") {
+        for (const [name, content] of Object.entries(project.files)) {
+            if (typeof content === "string") {
+                files[name] = content;
+            }
+        }
+    }
+
+    if (!Object.keys(files).length) {
+        Object.assign(files, createDefaultFiles());
+    }
+
+    return {
+        id: String(project.id || createId()),
+        name: String(project.name || "Untitled Project"),
+        files,
+        createdAt: project.createdAt || Date.now(),
+        updatedAt: project.updatedAt || Date.now()
+    };
+}
+
+/* =========================
+   STORAGE
+========================= */
+
+function loadData() {
+    let saved = null;
+
+    try {
+        saved =
+            JSON.parse(localStorage.getItem(NEW_STORAGE_KEY)) ||
+            JSON.parse(localStorage.getItem(STORAGE_KEY)) ||
+            JSON.parse(localStorage.getItem(OLD_STORAGE_KEY));
+    } catch (error) {
+        console.error("Storage loading error:", error);
+    }
+
+    if (Array.isArray(saved)) {
+        projects = saved.map(normalizeProject).filter(Boolean);
+    } else if (saved && typeof saved === "object") {
+        projects = Array.isArray(saved.projects)
+            ? saved.projects.map(normalizeProject).filter(Boolean)
+            : [];
+
+        currentTheme = saved.theme || "dark";
+        editorFontSize = Number(saved.fontSize) || 14;
+    }
+
+    if (saved && typeof saved === "object" && !Array.isArray(saved)) {
+        activeProjectId = saved.activeProjectId || null;
+    }
+
+    if (!projects.length) {
+        projects = [];
+    }
+
+    if (!projects.some(project => project.id === activeProjectId)) {
+        activeProjectId = null;
+    }
+
+    applyTheme();
+    applyFontSize();
+}
+
+function saveData() {
+    const data = {
+        version: 5,
+        projects,
+        activeProjectId,
+        theme: currentTheme,
+        fontSize: editorFontSize
+    };
+
+    try {
+        localStorage.setItem(NEW_STORAGE_KEY, JSON.stringify(data));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+        showToast("Penyimpanan penuh atau tidak tersedia");
+        console.error(error);
+    }
+}
+
+function scheduleSave() {
+    const status = $("saveStatus");
+
+    if (status) {
+        status.textContent = "Unsaved...";
+    }
+
+    clearTimeout(saveTimer);
+
+    saveTimer = setTimeout(() => {
+        saveCurrentFile();
+        saveData();
+
+        if (status) {
+            status.textContent = "Saved";
+        }
+    }, 500);
+}
+
+function saveCurrentFile() {
+    const project = getActiveProject();
+
+    if (!project || !activeFile || !codeEditor) return;
+
+    project.files[activeFile] = codeEditor.value;
+    project.updatedAt = Date.now();
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function renderDashboard() {
+    if (!projectGrid) return;
+
+    projectGrid.innerHTML = "";
+
+    if (projectCount) {
+        projectCount.textContent = projects.length;
+    }
+
+    if (emptyProjects) {
+        emptyProjects.classList.toggle("hidden", projects.length > 0);
+    }
+
+    projects.forEach(project => {
+        const card = document.createElement("article");
+
+        card.className = "project-card";
+
+        const fileCount = Object.keys(project.files).length;
+
+        card.innerHTML = `
+            <div class="project-card-icon">⌘</div>
+            <h3>${escapeHTML(project.name)}</h3>
+            <p>Web Development Project</p>
+            <div class="project-card-footer">
+                <span>${fileCount} files</span>
+                <span>Open project →</span>
+            </div>
+        `;
+
+        card.addEventListener("click", () => {
+            openProject(project.id);
+        });
+
+        card.addEventListener("contextmenu", event => {
+            event.preventDefault();
+            projectMenu(project.id);
+        });
+
+        projectGrid.appendChild(card);
+    });
+}
+
+/* =========================
+   PROJECT MANAGER
+========================= */
+
+function openProjectModal() {
+    const modal = $("projectModal");
+
+    if (!modal) return;
+
+    $("projectModalTitle").textContent = "Create Project";
+    $("projectNameInput").value = "";
+    $("projectTemplate").value = "html";
+
+    modal.classList.remove("hidden");
+    $("projectNameInput").focus();
+}
+
+function closeProjectModal() {
+    $("projectModal")?.classList.add("hidden");
+}
+
+function createProject() {
+    const nameInput = $("projectNameInput");
+    const templateInput = $("projectTemplate");
+
+    const name = nameInput.value.trim();
+    const template = templateInput.value;
+
+    if (!name) {
+        showToast("Masukkan nama project terlebih dahulu");
+        nameInput.focus();
+        return;
+    }
+
+    const project = {
+        id: createId(),
+        name,
+        files: createDefaultFiles(template),
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+    };
+
+    projects.unshift(project);
+
+    saveData();
+    renderDashboard();
+    closeProjectModal();
+    openProject(project.id);
+
+    showToast("Project berhasil dibuat");
+}
+
+function projectMenu(id) {
+    const project = projects.find(item => item.id === id);
+
+    if (!project) return;
+
+    const action = prompt(
+        `Project: ${project.name}\n\n` +
+        "Ketik salah satu:\n" +
+        "1 = Rename\n" +
+        "2 = Export\n" +
+        "3 = Delete\n\n" +
+        "Kosongkan untuk batal."
+    );
+
+    if (action === "1") {
+        renameProject(id);
+    } else if (action === "2") {
+        exportProject(id);
+    } else if (action === "3") {
+        deleteProject(id);
+    }
+}
+
+function renameProject(id) {
+    const project = projects.find(item => item.id === id);
+    if (!project) return;
+
+    const name = prompt("Nama project baru:", project.name);
+
+    if (!name || !name.trim()) return;
+
+    project.name = name.trim();
+    project.updatedAt = Date.now();
+
+    saveData();
+    renderDashboard();
+    updateWorkspaceHeader();
+
+    showToast("Project berhasil diubah");
+}
+
+function deleteProject(id) {
+    const project = projects.find(item => item.id === id);
+    if (!project) return;
+
+    if (!confirm(`Hapus project "${project.name}"?`)) return;
+
+    projects = projects.filter(item => item.id !== id);
+
+    if (activeProjectId === id) {
+        activeProjectId = null;
+        activeFile = null;
+        openFiles = [];
+
+        showDashboard();
+    }
+
+    saveData();
+    renderDashboard();
+
+    showToast("Project dihapus");
+}
+
+/* =========================
+   WORKSPACE
+========================= */
+
+function openProject(id) {
+    const project = projects.find(item => item.id === id);
+
+    if (!project) return;
+
+    activeProjectId = id;
+
+    const firstFile = Object.keys(project.files)[0];
+
+    activeFile = firstFile || null;
+    openFiles = activeFile ? [activeFile] : [];
+
+    dashboard?.classList.add("hidden");
+    workspace?.classList.remove("hidden");
+
+    fileDrawer?.classList.add("hidden");
+    previewPanel?.classList.add("hidden");
+
+    updateWorkspaceHeader();
+    renderFiles();
+    renderTabs();
+
+    if (activeFile) {
+        loadFile(activeFile);
+    } else {
+        codeEditor.value = "";
+    }
+
+    saveData();
+}
+
+function showDashboard() {
+    saveCurrentFile();
+    saveData();
+
+    workspace?.classList.add("hidden");
+    dashboard?.classList.remove("hidden");
+
+    $("breadcrumbTitle").textContent = "Dashboard";
+
+    renderDashboard();
+}
+
+function updateWorkspaceHeader() {
+    const project = getActiveProject();
+
+    if (!project) return;
+
+    $("currentProjectName").textContent = project.name;
+    $("currentProjectInfo").textContent =
+        `${Object.keys(project.files).length} project files`;
+
+    $("drawerProjectName").textContent = project.name;
+    $("breadcrumbTitle").textContent = project.name;
+}
+
+/* =========================
+   FILE EXPLORER
+========================= */
+
+function renderFiles() {
+    const project = getActiveProject();
+
+    if (!project || !fileList) return;
+
+    fileList.innerHTML = "";
+
+    Object.keys(project.files).forEach(filename => {
+        const item = document.createElement("div");
+
+        item.className =
+            "file-item" + (filename === activeFile ? " active" : "");
+
+        item.innerHTML = `
+            <span>${getFileIcon(filename)}</span>
+            <span>${escapeHTML(filename)}</span>
+        `;
+
+        item.addEventListener("click", () => {
+            openFile(filename);
+        });
+
+        item.addEventListener("contextmenu", event => {
+            event.preventDefault();
+            fileMenu(filename);
+        });
+
+        fileList.appendChild(item);
+    });
+}
+
+function fileMenu(filename) {
+    const action = prompt(
+        `File: ${filename}\n\n` +
+        "1 = Rename\n" +
+        "2 = Delete\n" +
+        "3 = Duplicate\n\n" +
+        "Kosongkan untuk batal."
+    );
+
+    if (action === "1") {
+        renameFile(filename);
+    } else if (action === "2") {
+        deleteFile(filename);
+    } else if (action === "3") {
+        duplicateFile(filename);
+    }
+}
+
+function addNewFile() {
+    const project = getActiveProject();
+    if (!project) return;
+
+    const filename = prompt("Nama file baru:", "new-file.js");
+
+    if (!filename || !filename.trim()) return;
+
+    const cleanName = filename.trim();
+
+    if (project.files[cleanName] !== undefined) {
+        showToast("Nama file sudah digunakan");
+        return;
+    }
+
+    project.files[cleanName] = "";
+
+    saveData();
+    renderFiles();
+    openFile(cleanName);
+
+    showToast("File berhasil dibuat");
+}
+
+function renameFile(oldName) {
+    const project = getActiveProject();
+    if (!project) return;
+
+    const newName = prompt("Nama file baru:", oldName);
+
+    if (!newName || !newName.trim()) return;
+
+    const cleanName = newName.trim();
+
+    if (project.files[cleanName] !== undefined) {
+        showToast("Nama file sudah digunakan");
+        return;
+    }
+
+    project.files[cleanName] = project.files[oldName];
+    delete project.files[oldName];
+
+    openFiles = openFiles.map(name =>
+        name === oldName ? cleanName : name
+    );
+
+    if (activeFile === oldName) {
+        activeFile = cleanName;
+    }
+
+    saveData();
+    renderFiles();
+    renderTabs();
+
+    if (activeFile === cleanName) {
+        loadFile(cleanName);
+    }
+
+    showToast("Nama file berhasil diubah");
+}
+
+function deleteFile(filename) {
+    const project = getActiveProject();
+    if (!project) return;
+
+    if (Object.keys(project.files).length <= 1) {
+        showToast("Project harus memiliki minimal satu file");
+        return;
+    }
+
+    if (!confirm(`Hapus file ${filename}?`)) return;
+
+    delete project.files[filename];
+
+    openFiles = openFiles.filter(name => name !== filename);
+
+    if (activeFile === filename) {
+        activeFile = openFiles[0] || Object.keys(project.files)[0];
+    }
+
+    if (activeFile && !openFiles.includes(activeFile)) {
+        openFiles.push(activeFile);
+    }
+
+    saveData();
+    renderFiles();
+    renderTabs();
+    loadFile(activeFile);
+
+    showToast("File berhasil dihapus");
+}
+
+function duplicateFile(filename) {
+    const project = getActiveProject();
+    if (!project) return;
+
+    let newName = filename.replace(/(\.[^.]+)?$/, "-copy$1");
+
+    let counter = 2;
+
+    while (project.files[newName] !== undefined) {
+        newName = filename.replace(
+            /(\.[^.]+)?$/,
+            `-copy-${counter++}$1`
+        );
+    }
+
+    project.files[newName] = project.files[filename];
+
+    saveData();
+    renderFiles();
+    openFile(newName);
+
+    showToast("File berhasil diduplikasi");
+}
+
+/* =========================
+   FILE TABS
+========================= */
+
+function openFile(filename) {
+    const project = getActiveProject();
+
+    if (!project || project.files[filename] === undefined) return;
+
+    saveCurrentFile();
+
+    activeFile = filename;
+
+    if (!openFiles.includes(filename)) {
+        openFiles.push(filename);
+    }
+
+    renderFiles();
+    renderTabs();
+    loadFile(filename);
+}
+
+function loadFile(filename) {
+    const project = getActiveProject();
+
+    if (!project || !filename) return;
+
+    activeFile = filename;
+
+    codeEditor.value = project.files[filename] ?? "";
+
+    $("activeFilePath").textContent = filename;
+    $("languageLabel").textContent = getLanguage(filename);
+
+    updateLineNumbers();
+    updateCursorPosition();
+}
+
+function renderTabs() {
+    const project = getActiveProject();
+
+    if (!project || !tabsBar) return;
+
+    tabsBar.innerHTML = "";
+
+    openFiles.forEach(filename => {
+        if (project.files[filename] === undefined) return;
+
+        const tab = document.createElement("button");
+
+        tab.className =
+            "editor-tab" + (filename === activeFile ? " active" : "");
+
+        tab.innerHTML = `
+            <span>${getFileIcon(filename)}</span>
+            <span>${escapeHTML(filename)}</span>
+            <span class="tab-close">×</span>
+        `;
+
+        tab.addEventListener("click", event => {
+            if (event.target.classList.contains("tab-close")) {
+                closeTab(filename);
+            } else {
+                openFile(filename);
+            }
+        });
+
+        tabsBar.appendChild(tab);
+    });
+}
+
+function closeTab(filename) {
+    saveCurrentFile();
+
+    openFiles = openFiles.filter(name => name !== filename);
+
+    if (activeFile === filename) {
+        activeFile = openFiles[openFiles.length - 1] || null;
+    }
+
+    if (activeFile) {
+        loadFile(activeFile);
+    } else {
+        codeEditor.value = "";
+        $("activeFilePath").textContent = "No file";
+        $("languageLabel").textContent = "TEXT";
+        updateLineNumbers();
+    }
+
+    renderTabs();
+    renderFiles();
+}
+
+/* =========================
+   CODE EDITOR
+========================= */
+
+function updateLineNumbers() {
+    if (!lineNumbers || !codeEditor) return;
+
+    const count = Math.max(
+        1,
+        codeEditor.value.split("\n").length
+    );
+
+    lineNumbers.textContent = Array.from(
+        { length: count },
+        (_, index) => index + 1
+    ).join("\n");
+}
+
+function updateCursorPosition() {
+    if (!codeEditor) return;
+
+    const position = codeEditor.selectionStart;
+    const before = codeEditor.value.slice(0, position);
+
+    const line = before.split("\n").length;
+    const column = before.length - before.lastIndexOf("\n");
+
+    $("cursorPosition").textContent =
+        `Ln ${line}, Col ${column}`;
+}
+
+function handleEditorInput() {
+    updateLineNumbers();
+    updateCursorPosition();
+    scheduleSave();
+}
+
+function insertEditorText(text) {
+    const start = codeEditor.selectionStart;
+    const end = codeEditor.selectionEnd;
+
+    codeEditor.setRangeText(text, start, end, "end");
+
+    handleEditorInput();
+    codeEditor.focus();
+}
+
+function handleEditorKeydown(event) {
+    if (event.key === "Tab") {
+        event.preventDefault();
+        insertEditorText("    ");
+    }
+
+    if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        manualSave();
+    }
+
+    if (event.key === "Enter" && event.ctrlKey) {
+        event.preventDefault();
+        runProject();
+    }
+}
+
+function manualSave() {
+    clearTimeout(saveTimer);
+
+    saveCurrentFile();
+    saveData();
+
+    $("saveStatus").textContent = "Saved";
+
+    showToast("Project berhasil disimpan");
+}
+
+/* =========================
+   SIMULATOR
+========================= */
+
+function buildPreviewHTML() {
+    const project = getActiveProject();
+
+    if (!project) return "";
+
+    let html = project.files["index.html"] || DEFAULT_HTML;
+
+    const css = project.files["style.css"] || "";
+    const js = project.files["script.js"] || "";
+
+    const styleTag = `<style>${css.replace(/<\/style/gi, "<\\/style")}</style>`;
+
+    const scriptTag = `
+<script>
+(function () {
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+
+    function sendToParent(type, args) {
+        try {
+            parent.postMessage({
+                source: "faiz-studio-preview",
+                type,
+                message: Array.from(args).map(item => {
+                    if (typeof item === "object") {
+                        try { return JSON.stringify(item); }
+                        catch { return String(item); }
+                    }
+                    return String(item);
+                }).join(" ")
+            }, "*");
+        } catch (error) {}
+    }
+
+    console.log = function (...args) {
+        originalLog.apply(console, args);
+        sendToParent("log", args);
+    };
+
+    console.error = function (...args) {
+        originalError.apply(console, args);
+        sendToParent("error", args);
+    };
+
+    console.warn = function (...args) {
+        originalWarn.apply(console, args);
+        sendToParent("warn", args);
+    };
+
+    window.addEventListener("error", event => {
+        sendToParent("error", [event.message]);
+    });
+
+    window.addEventListener("unhandledrejection", event => {
+        sendToParent("error", [event.reason]);
+    });
+})();
+<\/script>
+<script>${js.replace(/<\/script/gi, "<\\/script")}<\/script>`;
+
+    if (/<\/head>/i.test(html)) {
+        html = html.replace(/<\/head>/i, styleTag + "</head>");
+    } else {
+        html = styleTag + html;
+    }
+
+    if (/<\/body>/i.test(html)) {
+        html = html.replace(/<\/body>/i, scriptTag + "</body>");
+    } else {
+        html += scriptTag;
+    }
+
+    return html;
+}
+
+function runProject() {
+    saveCurrentFile();
+    saveData();
+
+    if (!getActiveProject()) {
+        showToast("Buka project terlebih dahulu");
+        return;
+    }
+
+    clearConsole();
+
+    previewFrame.srcdoc = buildPreviewHTML();
+
+    previewPanel.classList.remove("hidden");
+
+    showToast("Project berhasil dijalankan");
+}
+
+function reloadPreview() {
+    if (!getActiveProject()) return;
+
+    previewFrame.srcdoc = buildPreviewHTML();
+
+    showToast("Preview diperbarui");
+}
+
+function closePreview() {
+    previewPanel?.classList.add("hidden");
+}
+
+function togglePreview() {
+    if (!getActiveProject()) return;
+
+    if (previewPanel.classList.contains("hidden")) {
+        runProject();
+    } else {
+        closePreview();
+    }
+}
+
+function fullscreenPreview() {
+    const frame = previewFrame;
+
+    if (!frame) return;
+
+    if (frame.requestFullscreen) {
+        frame.requestFullscreen().catch(() => {
+            showToast("Fullscreen tidak tersedia");
+        });
+    } else {
+        showToast("Fullscreen tidak didukung browser");
+    }
+}
+
+/* =========================
+   CONSOLE
+========================= */
+
+function switchBottomPanel(name) {
+    currentPanel = name;
+
+    $("terminalView").classList.toggle(
+        "hidden",
+        name !== "terminal"
+    );
+
+    $("consoleView").classList.toggle(
+        "hidden",
+        name !== "console"
+    );
+
+    $("problemsView").classList.toggle(
+        "hidden",
+        name !== "problems"
+    );
+
+    document.querySelectorAll(".bottom-tab").forEach(tab => {
+        tab.classList.toggle(
+            "active",
+            tab.dataset.panel === name
+        );
+    });
+}
+
+function writeConsole(message, type = "log") {
+    const output = $("consoleOutput");
+
+    const item = document.createElement("p");
+
+    item.className =
+        type === "error" ? "console-error" :
+        type === "warn" ? "console-log" :
+        "console-log";
+
+    item.textContent = `[${type.toUpperCase()}] ${message}`;
+
+    output.appendChild(item);
+
+    switchBottomPanel("console");
+}
+
+function clearConsole() {
+    $("consoleOutput").innerHTML =
+        '<p class="console-empty">Console output akan muncul di sini.</p>';
+
+    $("problemsOutput").textContent =
+        "Belum ada masalah terdeteksi.";
+}
+
+window.addEventListener("message", event => {
+    const data = event.data;
+
+    if (!data || data.source !== "faiz-studio-preview") return;
+
+    writeConsole(data.message, data.type);
+
+    if (data.type === "error") {
+        $("problemsOutput").textContent = data.message;
+    }
+});
+
+/* =========================
+   TERMINAL
+========================= */
+
+function runTerminalCommand() {
+    const input = $("terminalInput");
+    const command = input.value.trim();
+
+    if (!command) return;
+
+    const terminal = $("terminalView");
+
+    const line = document.createElement("p");
+    line.textContent = `❯ ${command}`;
+    terminal.insertBefore(line, input.parentElement);
+
+    input.value = "";
+
+    const project = getActiveProject();
+
+    const parts = command.split(/\s+/);
+    const action = parts[0].toLowerCase();
+
+    const output = message => {
+        const result = document.createElement("p");
+        result.textContent = message;
+        terminal.insertBefore(result, input.parentElement);
+    };
+
+    if (action === "help") {
+        output("Commands: help, ls, pwd, clear, date, projects, run");
+    } else if (action === "clear") {
+        terminal.querySelectorAll("p").forEach(item => {
+            if (!item.classList.contains("terminal-welcome")) {
+                item.remove();
+            }
+        });
+    } else if (action === "pwd") {
+        output(project ? `/workspace/${project.name}` : "/workspace");
+    } else if (action === "ls") {
+        output(
+            project
+                ? Object.keys(project.files).join("    ")
+                : "Tidak ada project aktif."
+        );
+    } else if (action === "date") {
+        output(new Date().toLocaleString("id-ID"));
+    } else if (action === "projects") {
+        output(
+            projects.length
+                ? projects.map(item => item.name).join(", ")
+                : "Belum ada project."
+        );
+    } else if (action === "run") {
+        runProject();
+        output("Menjalankan preview...");
+    } else {
+        output(`Command tidak dikenal: ${action}. Ketik help.`);
+    }
+
+    terminal.scrollTop = terminal.scrollHeight;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+function openSearch() {
+    $("searchModal").classList.remove("hidden");
+    $("searchInput").value = "";
+    $("searchMessage").textContent = "";
+    $("searchInput").focus();
+}
+
+function performSearch() {
+    const query = $("searchInput").value.trim().toLowerCase();
+
+    if (!query) {
+        $("searchMessage").textContent = "Masukkan kata pencarian.";
+        return;
+    }
+
+    searchResults = [];
+
+    projects.forEach(project => {
+        if (project.name.toLowerCase().includes(query)) {
+            searchResults.push({
+                project,
+                filename: null
+            });
+        }
+
+        Object.entries(project.files).forEach(([filename, content]) => {
+            if (
+                filename.toLowerCase().includes(query) ||
+                content.toLowerCase().includes(query)
+            ) {
+                searchResults.push({
+                    project,
+                    filename
+                });
+            }
+        });
+    });
+
+    $("searchMessage").textContent =
+        `${searchResults.length} hasil ditemukan.`;
+
+    if (!searchResults.length) {
+        showToast("Tidak ada hasil ditemukan");
+        return;
+    }
+
+    const first = searchResults[0];
+
+    $("searchModal").classList.add("hidden");
+
+    openProject(first.project.id);
+
+    if (first.filename) {
+        openFile(first.filename);
+    }
+
+    showToast("Hasil pencarian dibuka");
+}
+
+/* =========================================================
+   IMPORT / EXPORT PROJECT
+========================================================= */
+
+function exportProject(id = activeProjectId) {
+    const project = projects.find(item => item.id === id);
+
+    if (!project) {
+        showToast("Project tidak ditemukan");
+        return;
+    }
+
+    const blob = new Blob(
+        [JSON.stringify(project, null, 2)],
+        { type: "application/json" }
+    );
+
+    downloadBlob(blob, `${project.name}.json`);
+
+    showToast("Project berhasil diekspor");
+}
+
+function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function importProjectFile(file) {
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        try {
+            const imported = normalizeProject(
+                JSON.parse(reader.result)
+            );
+
+            if (!imported) {
+                throw new Error("Invalid project");
+            }
+
+            imported.id = createId();
+            imported.name = imported.name + " (Imported)";
+
+            projects.unshift(imported);
+
+            saveData();
+            renderDashboard();
+            openProject(imported.id);
+
+            showToast("Project berhasil diimpor");
+        } catch (error) {
+            showToast("File project tidak valid");
+            console.error(error);
+        }
+    };
+
+    reader.readAsText(file);
+}
+
+function importIndividualFiles(files) {
+    const project = getActiveProject();
+
+    if (!project) {
+        showToast("Buka project terlebih dahulu");
+        return;
+    }
+
+    Array.from(files).forEach(file => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            project.files[file.name] = String(reader.result);
+
+            saveData();
+            renderFiles();
+
+            showToast(`${file.name} berhasil diimpor`);
+        };
+
+        reader.readAsText(file);
+    });
+}
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function applyTheme() {
+    const systemDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    const useDark =
+        currentTheme === "dark" ||
+        (currentTheme === "system" && systemDark);
+
+    document.body.classList.toggle("light-theme", !useDark);
+
+    if ($("appearanceSelect")) {
+        $("appearanceSelect").value = currentTheme;
+    }
+}
+
+function setTheme(theme) {
+    currentTheme = theme;
+
+    applyTheme();
+    saveData();
+
+    showToast(`Tema ${theme} diterapkan`);
+}
+
+function toggleTheme() {
+    setTheme(
+        currentTheme === "dark" ? "light" : "dark"
+    );
+}
+
+function applyFontSize() {
+    if (codeEditor) {
+        codeEditor.style.fontSize = `${editorFontSize}px`;
+    }
+
+    if ($("fontSizeSelect")) {
+        $("fontSizeSelect").value = String(editorFontSize);
+    }
+}
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+function openSettings() {
+    $("settingsModal").classList.remove("hidden");
+}
+
+function closeSettings() {
+    $("settingsModal").classList.add("hidden");
+}
+
+/* =========================================================
+   MOBILE SIDEBAR
+========================================================= */
+
+function toggleSidebar() {
+    $("sidebar")?.classList.toggle("open");
+}
+
+/* =========================================================
+   BOTTOM PANEL
+========================================================= */
+
+function toggleBottomPanel() {
+    $("bottomPanel")?.classList.toggle("collapsed");
+}
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+function bindEvents() {
+
+    $("homeBtn")?.addEventListener("click", () => {
+        showDashboard();
+        $("sidebar")?.classList.remove("open");
+    });
+
+    $("projectsNavBtn")?.addEventListener("click", () => {
+        showDashboard();
+        $("sidebar")?.classList.remove("open");
+    });
+
+    $("menuBtn")?.addEventListener("click", toggleSidebar);
+
+    $("newProjectBtn")?.addEventListener("click", openProjectModal);
+    $("emptyCreateBtn")?.addEventListener("click", openProjectModal);
+
+    $("closeProjectModal")?.addEventListener(
+        "click",
+        closeProjectModal
+    );
+
+    $("confirmProjectBtn")?.addEventListener(
+        "click",
+        createProject
+    );
+
+    $("projectNameInput")?.addEventListener("keydown", event => {
+        if (event.key === "Enter") createProject();
+    });
+
+    $("backDashboardBtn")?.addEventListener(
+        "click",
+        showDashboard
+    );
+
+    $("fileMenuBtn")?.addEventListener("click", () => {
+        fileDrawer?.classList.toggle("hidden");
+    });
+
+    $("closeDrawerBtn")?.addEventListener("click", () => {
+        fileDrawer?.classList.add("hidden");
+    });
+
+    $("addFileBtn")?.addEventListener("click", addNewFile);
+
+    $("saveBtn")?.addEventListener("click", manualSave);
+
+    $("runBtn")?.addEventListener("click", runProject);
+
+    $("previewBtn")?.addEventListener("click", togglePreview);
+
+    $("reloadBtn")?.addEventListener("click", reloadPreview);
+
+    $("closePreviewBtn")?.addEventListener("click", closePreview);
+
+    $("fullscreenBtn")?.addEventListener(
+        "click",
+        fullscreenPreview
+    );
+
+    $("searchBtn")?.addEventListener("click", openSearch);
+
+    $("closeSearchModal")?.addEventListener("click", () => {
+        $("searchModal").classList.add("hidden");
+    });
+
+    $("confirmSearchBtn")?.addEventListener(
+        "click",
+        performSearch
+    );
+
+    $("searchInput")?.addEventListener("keydown", event => {
+        if (event.key === "Enter") performSearch();
+    });
+
+    $("themeBtn")?.addEventListener("click", toggleTheme);
+
+    $("settingsBtn")?.addEventListener("click", openSettings);
+
+    $("closeSettingsModal")?.addEventListener(
+        "click",
+        closeSettings
+    );
+
+    $("appearanceSelect")?.addEventListener("change", event => {
+        setTheme(event.target.value);
+    });
+
+    $("fontSizeSelect")?.addEventListener("change", event => {
+        editorFontSize = Number(event.target.value);
+        applyFontSize();
+        saveData();
+    });
+
+    $("clearConsoleBtn")?.addEventListener("click", clearConsole);
+
+    $("toggleBottomPanelBtn")?.addEventListener(
+        "click",
+        toggleBottomPanel
+    );
+
+    $("terminalInput")?.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            runTerminalCommand();
+        }
+    });
+
+    document.querySelectorAll(".bottom-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+            switchBottomPanel(tab.dataset.panel);
+        });
+    });
+
+    codeEditor?.addEventListener("input", handleEditorInput);
+
+    codeEditor?.addEventListener(
+        "keydown",
+        handleEditorKeydown
+    );
+
+    codeEditor?.addEventListener("click", updateCursorPosition);
+
+    codeEditor?.addEventListener("keyup", updateCursorPosition);
+
+    $("importFileBtn")?.addEventListener("click", () => {
+        $("fileInput").click();
+    });
+
+    $("fileInput")?.addEventListener("change", event => {
+        importIndividualFiles(event.target.files);
+        event.target.value = "";
+    });
+
+    $("exportProjectBtn")?.addEventListener("click", () => {
+        exportProject();
+    });
+
+    $("importProjectBtn")?.addEventListener("click", () => {
+        $("projectImportInput").click();
+    });
+
+    $("projectImportInput")?.addEventListener("change", event => {
+        importProjectFile(event.target.files[0]);
+        event.target.value = "";
+    });
+
+    $("viewAllBtn")?.addEventListener("click", () => {
+        renderDashboard();
+        showToast("Menampilkan semua project");
+    });
+
+    /* CLOSE MODALS BY CLICKING OUTSIDE */
+
+    ["projectModal", "searchModal", "settingsModal"].forEach(id => {
+        $(id)?.addEventListener("click", event => {
+            if (event.target.id === id) {
+                $(id).classList.add("hidden");
+            }
+        });
+    });
+
+    /* KEYBOARD SHORTCUTS */
+
+    document.addEventListener("keydown", event => {
+        const modifier = event.ctrlKey || event.metaKey;
+
+        if (modifier && event.key.toLowerCase() === "k") {
+            event.preventDefault();
+            openSearch();
+        }
+
+        if (modifier && event.key.toLowerCase() === "s") {
+            event.preventDefault();
+            manualSave();
+        }
+
+        if (event.key === "Escape") {
+            fileDrawer?.classList.add("hidden");
+            $("searchModal")?.classList.add("hidden");
+            $("settingsModal")?.classList.add("hidden");
+            $("projectModal")?.classList.add("hidden");
+        }
+    });
+}
+
+/* =========================================================
+   SYSTEM THEME LISTENER
+========================================================= */
+
+if (window.matchMedia) {
+    window.matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener?.("change", () => {
+            if (currentTheme === "system") {
+                applyTheme();
+            }
+        });
+}
+
+/* =========================================================
+   SERVICE WORKER
+========================================================= */
+
+function registerServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js")
+            .catch(error => {
+                console.warn("Service Worker:", error);
+            });
+    });
+}
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+function initializeApp() {
+    loadData();
+
+    bindEvents();
+
+    renderDashboard();
+
+    switchBottomPanel("terminal");
+
+    applyTheme();
+    applyFontSize();
+
+    registerServiceWorker();
+
+    console.log("Faiz Code Studio 5.0 initialized.");
+}
+
+initializeApp();
