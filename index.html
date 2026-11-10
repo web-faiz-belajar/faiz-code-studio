@@ -204,29 +204,36 @@
 </div>
 
 <div id="toast" class="toast"></div>
-
+    
 <script>
 window.addEventListener("error", function(event) {
-    const message = document.createElement("div");
+    const box = document.createElement("div");
 
-    message.style.cssText = `
-        position:fixed;
-        z-index:9999;
-        bottom:10px;
-        left:10px;
-        right:10px;
-        padding:15px;
-        background:#8b1e2d;
-        color:white;
-        font-size:12px;
-        border-radius:10px;
-        overflow-wrap:anywhere;
+    box.style.cssText = `
+        position: fixed;
+        z-index: 99999;
+        bottom: 10px;
+        left: 10px;
+        right: 10px;
+        padding: 15px;
+        background: #8b1e2d;
+        color: white;
+        font-size: 12px;
+        border-radius: 10px;
+        overflow-wrap: anywhere;
     `;
 
-    message.textContent =
-        "JavaScript Error: " + event.message;
+    box.textContent =
+        "ERROR: " + (event.message || "Tidak diketahui") +
+        " | File: " + (event.filename || "Tidak diketahui") +
+        " | Baris: " + (event.lineno || "-") +
+        " | Kolom: " + (event.colno || "-");
 
-    document.body.appendChild(message);
+    document.body.appendChild(box);
+});
+
+window.addEventListener("unhandledrejection", function(event) {
+    alert("Promise Error: " + String(event.reason));
 });
 </script>
 
