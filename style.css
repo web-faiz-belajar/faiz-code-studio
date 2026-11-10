@@ -1262,3 +1262,21 @@ select {
     border-radius: 9px;
     font-size: 18px;
 }
+.editor-toolbar {
+    overflow: visible !important;
+    position: relative;
+    z-index: 45;
+}
+
+#togglePreviewBtn {
+    display: flex !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    height: 36px !important;
+    flex-shrink: 0 !important;
+    margin-left: auto !important;
+    color: white !important;
+    background: red !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
