@@ -207,6 +207,14 @@
     
 <script>
 window.addEventListener("error", function(event) {
+    console.error("ERROR UTAMA:", {
+        message: event.message,
+        file: event.filename,
+        line: event.lineno,
+        column: event.colno,
+        error: event.error
+    });
+
     const box = document.createElement("div");
 
     box.style.cssText = `
@@ -223,8 +231,8 @@ window.addEventListener("error", function(event) {
         overflow-wrap: anywhere;
     `;
 
-    box.textContent =
-        "ERROR: " + (event.message || "Tidak diketahui") +
+    box.textContent = "ERROR: " +
+        (event.message || "Tidak diketahui") +
         " | File: " + (event.filename || "Tidak diketahui") +
         " | Baris: " + (event.lineno || "-") +
         " | Kolom: " + (event.colno || "-");
@@ -233,7 +241,7 @@ window.addEventListener("error", function(event) {
 });
 
 window.addEventListener("unhandledrejection", function(event) {
-    alert("Promise Error: " + String(event.reason));
+    console.error("PROMISE ERROR:", event.reason);
 });
 </script>
 
