@@ -6,7 +6,7 @@
 
 "use strict";
 
-const STORAGE_KEY = "faiz_code_studio_v3";
+const CACHE_NAME = "faiz-code-studio-v5";
 const $ = id => document.getElementById(id);
 
 /* ELEMENTS */
