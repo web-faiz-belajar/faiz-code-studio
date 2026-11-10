@@ -852,12 +852,12 @@ window.addEventListener("unhandledrejection", function(event) {
 
     // Gabungkan JavaScript
     const scriptTag =
-        "<script>" +
-        diagnosticScript +
-        "\n" +
-        escapeScript(js) +
-        "<\\/script>";
-
+    "<script>" +
+    diagnosticScript +
+    "\n" +
+    escapeScript(js) +
+    "</" + "script>";
+   
     // Masukkan CSS ke HEAD
     if (/<\/head>/i.test(html)) {
         html = html.replace(
