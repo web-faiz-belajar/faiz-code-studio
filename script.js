@@ -1,836 +1,212 @@
 
-/* =========================================
-   FAIZ CODE STUDIO 3.1
-   Project, Explorer, Editor, Simulator
-========================================= */
+/* ==================================
+   FAIZ CODE STUDIO 1.0
+================================== */
 
-"use strict";
-
-const CACHE_NAME = "faiz-code-studio-v5";
 const $ = id => document.getElementById(id);
 
-/* ELEMENTS */
+const STORAGE_KEY = "faiz_code_studio_v1";
 
-const projectSelect = $("projectSelect");
-const fileDrawer = $("fileDrawer");
-const fileTree = $("fileTree");
-const editorTabs = $("editorTabs");
-const codeEditor = $("codeEditor");
-const lineNumbers = $("lineNumbers");
-const activeFilePath = $("activeFilePath");
-const saveStatus = $("saveStatus");
-const languageStatus = $("languageStatus");
+/* DEFAULT PROJECT */
 
-const previewFrame = $("previewFrame");
-const previewStatus = $("previewStatus");
-const previewPanel = document.querySelector(".preview-panel");
-const workspace = document.querySelector(".workspace");
-const editorToolbar = document.querySelector(".editor-toolbar");
-const togglePreviewBtn = $("togglePreviewBtn");
-
-const modalOverlay = $("modalOverlay");
-const modalTitle = $("modalTitle");
-const modalInput = $("modalInput");
-const modalHint = $("modalHint");
-
-const welcomeScreen = $("welcomeScreen");
-const welcomeProjectList = $("welcomeProjectList");
-
-let projects = [];
-let currentProjectId = null;
-let activeFile = null;
-let openTabs = [];
-let selectedFolder = "";
-let modalMode = "";
-let toastTimer = null;
-
-
-/* =========================================
-   ERROR HANDLING
-========================================= */
-
-window.addEventListener("error", event => {
-    console.error("Studio Error:", event.message, event.error);
-});
-
-window.addEventListener("unhandledrejection", event => {
-    console.error("Promise Error:", event.reason);
-});
-
-
-/* =========================================
-   STARTER PROJECT
-========================================= */
-
-function createId() {
-    return "id-" + Date.now() + "-" +
-        Math.random().toString(36).slice(2, 8);
-}
-
-function makeStarterProject(name) {
-    return {
-        id: createId(),
-        name,
-        children: [
-            {
-                type: "file",
-                name: "index.html",
-                content: `<!DOCTYPE html>
+const defaultFiles = {
+    html: `<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Saya</title>
+    <title>Aplikasi Saya</title>
 </head>
 <body>
     <h1>Halo Dunia!</h1>
-    <p>Saya sedang belajar coding.</p>
+    <p>Selamat datang di aplikasi pertama saya.</p>
+
+    <button onclick="halo()">Klik Saya</button>
+
+    <script src="script.js"><\/script>
 </body>
-</html>`
-            },
-            {
-                type: "folder",
-                name: "CSS",
-                children: [
-                    {
-                        type: "file",
-                        name: "style.css",
-                        content: `body {
+</html>`,
+
+    css: `body {
     font-family: Arial, sans-serif;
-    background: #f1f5f9;
-    color: #1e293b;
     text-align: center;
     padding: 30px;
+    background: #f1f5f9;
 }
 
 h1 {
     color: #5267e8;
+}
+
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    background: #5267e8;
+    color: white;
+}`,
+
+    js: `function halo() {
+    alert("Halo! JavaScript berhasil berjalan.");
 }`
-                    }
-                ]
-            },
-            {
-                type: "folder",
-                name: "JS",
-                children: [
-                    {
-                        type: "file",
-                        name: "script.js",
-                        content: `console.log("Project berhasil dijalankan!");`
-                    }
-                ]
-            }
-        ]
-    };
-}
+};
 
+/* ELEMENTS */
 
-/* =========================================
-   STORAGE
-========================================= */
+const workspace = $("workspace");
+const codeEditor = $("codeEditor");
+const fileDrawer = $("fileDrawer");
+const togglePreviewBtn = $("togglePreviewBtn");
+const previewFrame = $("previewFrame");
 
-function saveData() {
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-            projects,
-            currentProjectId
-        }));
+let files = loadProject();
+let activeFile = "html";
 
-        if (saveStatus) {
-            saveStatus.textContent = "● Saved";
-        }
+/* LOAD PROJECT */
 
-    } catch (error) {
-        console.error("Gagal menyimpan:", error);
-        showToast("Gagal menyimpan project");
-    }
-}
-
-function loadData() {
+function loadProject() {
     try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        const data = saved ? JSON.parse(saved) : null;
 
-        if (data && Array.isArray(data.projects)) {
-            projects = data.projects;
-            currentProjectId = data.currentProjectId;
+        if (saved) {
+            const parsed = JSON.parse(saved);
+
+            if (
+                parsed &&
+                typeof parsed.html === "string" &&
+                typeof parsed.css === "string" &&
+                typeof parsed.js === "string"
+            ) {
+                return parsed;
+            }
         }
-
     } catch (error) {
-        console.error("Data tidak terbaca:", error);
+        console.error("Gagal membaca project:", error);
     }
 
-    if (!projects.length) {
-        const project = makeStarterProject("Project 1");
-        projects = [project];
-        currentProjectId = project.id;
-        saveData();
-    }
-
-    if (!projects.some(p => p.id === currentProjectId)) {
-        currentProjectId = projects[0].id;
-    }
+    return { ...defaultFiles };
 }
 
-function getProject() {
-    return projects.find(p => p.id === currentProjectId);
-}
+/* SAVE PROJECT */
 
+function saveProject() {
+    files[activeFile] = codeEditor.value;
 
-/* =========================================
-   PROJECT SELECTOR
-========================================= */
-
-function renderProjects() {
-    if (!projectSelect) return;
-
-    projectSelect.innerHTML = "";
-
-    projects.forEach(project => {
-        const option = document.createElement("option");
-
-        option.value = project.id;
-        option.textContent = project.name;
-        option.selected = project.id === currentProjectId;
-
-        projectSelect.appendChild(option);
-    });
-
-    const drawerName = $("drawerProjectName");
-
-    if (drawerName) {
-        drawerName.textContent =
-            getProject()?.name || "Project Files";
-    }
-}
-
-if (projectSelect) {
-    projectSelect.addEventListener("change", () => {
-        currentProjectId = projectSelect.value;
-
-        activeFile = null;
-        openTabs = [];
-        selectedFolder = "";
-
-        codeEditor.value = "";
-        codeEditor.disabled = true;
-
-        activeFilePath.textContent = "Belum ada file";
-        languageStatus.textContent = "No file";
-
-        saveData();
-        renderAll();
-        openFirstHtml();
-    });
-}
-
-
-/* =========================================
-   FILE SYSTEM
-========================================= */
-
-function getNode(path) {
-    const project = getProject();
-
-    if (!project) return null;
-    if (!path) return project;
-
-    let current = project;
-
-    for (const part of path.split("/")) {
-        if (!current.children) return null;
-
-        current = current.children.find(
-            item => item.name === part
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(files)
         );
 
-        if (!current) return null;
-    }
-
-    return current;
-}
-
-function getAllFiles(nodes, parent = "") {
-    let files = [];
-
-    for (const node of nodes || []) {
-        const path = parent
-            ? parent + "/" + node.name
-            : node.name;
-
-        if (node.type === "file") {
-            files.push({ path, node });
-        } else {
-            files.push(
-                ...getAllFiles(node.children, path)
-            );
-        }
-    }
-
-    return files;
-}
-
-
-/* =========================================
-   FILE EXPLORER
-========================================= */
-
-function getIcon(name, type) {
-    if (type === "folder") return "📁";
-    if (name.endsWith(".html")) return "🌐";
-    if (name.endsWith(".css")) return "🎨";
-    if (name.endsWith(".js")) return "📜";
-    if (name.endsWith(".json")) return "⚙️";
-
-    if (
-        name.endsWith(".png") ||
-        name.endsWith(".jpg") ||
-        name.endsWith(".jpeg")
-    ) return "🖼️";
-
-    return "📄";
-}
-
-function renderTree(nodes, parentPath = "", container = fileTree) {
-    if (!container) return;
-
-    (nodes || []).forEach(node => {
-        const path = parentPath
-            ? parentPath + "/" + node.name
-            : node.name;
-
-        const row = document.createElement("div");
-        row.className = "tree-row";
-
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "tree-entry";
-        button.textContent =
-            getIcon(node.name, node.type) + " " + node.name;
-
-        if (node.type === "file") {
-            if (path === activeFile) {
-                button.classList.add("selected");
-            }
-
-            button.addEventListener("click", () => {
-                openFile(path);
-            });
-
-            row.appendChild(button);
-            container.appendChild(row);
-            return;
-        }
-
-        button.addEventListener("click", () => {
-            selectedFolder = path;
-
-            const children = row.nextElementSibling;
-
-            if (children) {
-                children.classList.toggle("collapsed");
-            }
-        });
-
-        const addButton = document.createElement("button");
-        addButton.type = "button";
-        addButton.className = "tree-action";
-        addButton.textContent = "+";
-        addButton.title = "Tambah file di folder ini";
-
-        addButton.addEventListener("click", () => {
-            selectedFolder = path;
-            showCreateModal("file");
-        });
-
-        row.append(button, addButton);
-        container.appendChild(row);
-
-        const childrenBox = document.createElement("div");
-        childrenBox.className = "tree-children";
-        container.appendChild(childrenBox);
-
-        renderTree(node.children, path, childrenBox);
-    });
-}
-
-function renderFileTree() {
-    if (!fileTree) return;
-
-    fileTree.innerHTML = "";
-
-    const project = getProject();
-    if (!project) return;
-
-    if (!project.children.length) {
-        const empty = document.createElement("div");
-        empty.className = "empty-tree";
-        empty.textContent =
-            "Belum ada file. Tekan + File untuk mulai.";
-
-        fileTree.appendChild(empty);
-        return;
-    }
-
-    renderTree(project.children);
-}
-
-
-/* =========================================
-   EDITOR
-========================================= */
-
-function getLanguage(path) {
-    if (path.endsWith(".html")) return "HTML";
-    if (path.endsWith(".css")) return "CSS";
-    if (path.endsWith(".js")) return "JavaScript";
-    if (path.endsWith(".json")) return "JSON";
-    return "TEXT";
-}
-
-function openFile(path) {
-    const node = getNode(path);
-
-    if (!node || node.type !== "file") return;
-
-    activeFile = path;
-
-    if (!openTabs.includes(path)) {
-        openTabs.push(path);
-    }
-
-    codeEditor.disabled = false;
-    codeEditor.value = node.content || "";
-
-    activeFilePath.textContent = path;
-    languageStatus.textContent = getLanguage(path);
-
-    renderTabs();
-    renderFileTree();
-    updateLineNumbers();
-
-    fileDrawer.classList.remove("open");
-}
-
-function renderTabs() {
-    if (!editorTabs) return;
-
-    editorTabs.innerHTML = "";
-
-    openTabs.forEach(path => {
-        const tab = document.createElement("button");
-        tab.type = "button";
-        tab.className = "editor-tab";
-
-        if (path === activeFile) {
-            tab.classList.add("active");
-        }
-
-        const name = path.split("/").pop();
-
-        const label = document.createElement("span");
-        label.textContent = getIcon(name, "file") + " " + name;
-
-        const close = document.createElement("span");
-        close.className = "tab-close";
-        close.textContent = "×";
-
-        close.addEventListener("click", event => {
-            event.stopPropagation();
-            closeTab(path);
-        });
-
-        tab.append(label, close);
-
-        tab.addEventListener("click", () => {
-            openFile(path);
-        });
-
-        editorTabs.appendChild(tab);
-    });
-}
-
-function closeTab(path) {
-    openTabs = openTabs.filter(item => item !== path);
-
-    if (activeFile === path) {
-        activeFile = openTabs[openTabs.length - 1] || null;
-
-        if (activeFile) {
-            openFile(activeFile);
-        } else {
-            codeEditor.value = "";
-            codeEditor.disabled = true;
-
-            activeFilePath.textContent = "Belum ada file";
-            languageStatus.textContent = "No file";
-
-            renderTabs();
-            updateLineNumbers();
-        }
-    } else {
-        renderTabs();
+        $("saveStatus").textContent = "Tersimpan";
+    } catch (error) {
+        $("saveStatus").textContent = "Gagal simpan";
+        console.error(error);
     }
 }
 
-function updateLineNumbers() {
-    if (!codeEditor || !lineNumbers) return;
+/* FILE INFORMATION */
 
-    const total = Math.max(
-        1,
-        codeEditor.value.split("\n").length
-    );
+const fileInfo = {
+    html: {
+        name: "index.html",
+        icon: "🌐",
+        language: "HTML"
+    },
 
-    lineNumbers.textContent = Array.from(
-        { length: total },
-        (_, i) => i + 1
-    ).join("\n");
-}
+    css: {
+        name: "style.css",
+        icon: "🎨",
+        language: "CSS"
+    },
 
-if (codeEditor) {
-    codeEditor.addEventListener("input", () => {
-        const node = getNode(activeFile);
+    js: {
+        name: "script.js",
+        icon: "⚡",
+        language: "JAVASCRIPT"
+    }
+};
 
-        if (!node || node.type !== "file") return;
+/* OPEN FILE */
 
-        node.content = codeEditor.value;
+function openFile(type) {
+    if (!fileInfo[type]) return;
 
-        updateLineNumbers();
-        saveData();
+    files[activeFile] = codeEditor.value;
+
+    activeFile = type;
+
+    codeEditor.value = files[type];
+
+    $("activeFilePath").textContent =
+        fileInfo[type].name;
+
+    $("tabName").textContent =
+        fileInfo[type].icon + " " + fileInfo[type].name;
+
+    $("languageLabel").textContent =
+        fileInfo[type].language;
+
+    document.querySelectorAll(".file-item").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.file === type
+        );
     });
 
-    codeEditor.addEventListener("scroll", () => {
-        lineNumbers.scrollTop = codeEditor.scrollTop;
+    $("saveStatus").textContent = "Tersimpan";
+}
+
+/* FILE BUTTONS */
+
+document.querySelectorAll(".file-item").forEach(button => {
+    button.addEventListener("click", () => {
+        openFile(button.dataset.file);
+        fileDrawer.classList.remove("open");
     });
-
-    codeEditor.addEventListener("keydown", event => {
-        if (event.key === "Tab") {
-            event.preventDefault();
-
-            const start = codeEditor.selectionStart;
-            const end = codeEditor.selectionEnd;
-
-            codeEditor.setRangeText(
-                "    ",
-                start,
-                end,
-                "end"
-            );
-
-            codeEditor.dispatchEvent(new Event("input"));
-        }
-
-        if (
-            (event.ctrlKey || event.metaKey) &&
-            event.key.toLowerCase() === "s"
-        ) {
-            event.preventDefault();
-            saveData();
-            showToast("Project tersimpan");
-        }
-    });
-}
-
-
-/* =========================================
-   MODAL
-========================================= */
-
-function showCreateModal(mode) {
-    if (!modalOverlay) return;
-
-    modalMode = mode;
-    modalOverlay.classList.remove("hidden");
-
-    if (mode === "project") {
-        modalTitle.textContent = "Project Baru";
-        modalInput.placeholder = "Contoh: Project 2";
-        modalHint.textContent = "Buat ruang kerja project baru.";
-    }
-
-    if (mode === "file") {
-        modalTitle.textContent = "File Baru";
-        modalInput.placeholder = "Contoh: index.html";
-        modalHint.textContent = "Gunakan ekstensi .html, .css, atau .js";
-    }
-
-    if (mode === "folder") {
-        modalTitle.textContent = "Folder Baru";
-        modalInput.placeholder = "Contoh: images";
-        modalHint.textContent = "Folder dibuat di lokasi yang dipilih.";
-    }
-
-    modalInput.value = "";
-    $("modalConfirmBtn").textContent = "Buat";
-    modalInput.focus();
-}
-
-function closeModal() {
-    if (modalOverlay) {
-        modalOverlay.classList.add("hidden");
-    }
-
-    modalMode = "";
-}
-
-function starterContent(name) {
-    if (name.endsWith(".html")) {
-        return `<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman Baru</title>
-</head>
-<body>
-    <h1>Halaman Baru</h1>
-</body>
-</html>`;
-    }
-
-    if (name.endsWith(".css")) {
-        return `body {
-    font-family: Arial, sans-serif;
-}`;
-    }
-
-    if (name.endsWith(".js")) {
-        return `console.log("Halo dari JavaScript!");`;
-    }
-
-    if (name.endsWith(".json")) {
-        return `{
-    "name": "Project Saya"
-}`;
-    }
-
-    return "";
-}
-
-function createItem() {
-    const name = modalInput.value.trim();
-
-    if (!name) {
-        showToast("Nama tidak boleh kosong");
-        return;
-    }
-
-    if (
-        name.includes("/") ||
-        name.includes("\\") ||
-        name === "." ||
-        name === ".."
-    ) {
-        showToast("Nama tidak valid");
-        return;
-    }
-
-    if (modalMode === "project") {
-        if (projects.some(
-            p => p.name.toLowerCase() === name.toLowerCase()
-        )) {
-            showToast("Nama project sudah digunakan");
-            return;
-        }
-
-        const project = makeStarterProject(name);
-
-        projects.push(project);
-        currentProjectId = project.id;
-
-        activeFile = null;
-        openTabs = [];
-        selectedFolder = "";
-
-        saveData();
-        renderAll();
-        renderWelcomeProjects();
-
-        welcomeScreen.style.display = "none";
-
-        openFirstHtml();
-        closeModal();
-        showToast("Project berhasil dibuat");
-        return;
-    }
-
-    const parent = getNode(selectedFolder);
-
-    if (!parent || !parent.children) {
-        showToast("Lokasi folder tidak ditemukan");
-        return;
-    }
-
-    if (parent.children.some(
-        item => item.name.toLowerCase() === name.toLowerCase()
-    )) {
-        showToast("Nama sudah digunakan");
-        return;
-    }
-
-    if (modalMode === "folder") {
-        parent.children.push({
-            type: "folder",
-            name,
-            children: []
-        });
-
-        saveData();
-        renderAll();
-        closeModal();
-        showToast("Folder berhasil dibuat");
-        return;
-    }
-
-    if (modalMode === "file") {
-        if (!/\.[a-zA-Z0-9]+$/.test(name)) {
-            showToast("Gunakan ekstensi seperti .html atau .css");
-            return;
-        }
-
-        parent.children.push({
-            type: "file",
-            name,
-            content: starterContent(name)
-        });
-
-        const newPath = selectedFolder
-            ? selectedFolder + "/" + name
-            : name;
-
-        saveData();
-        renderAll();
-        closeModal();
-        openFile(newPath);
-        showToast("File berhasil dibuat");
-    }
-}
-
-
-/* =========================================
-   MODAL EVENTS
-========================================= */
-
-$("newProjectBtn")?.addEventListener("click", () => {
-    showCreateModal("project");
 });
 
-$("addFileBtn")?.addEventListener("click", () => {
-    showCreateModal("file");
-});
+/* FILE EXPLORER */
 
-$("addFolderBtn")?.addEventListener("click", () => {
-    showCreateModal("folder");
-});
-
-$("modalConfirmBtn")?.addEventListener("click", createItem);
-$("modalCancelBtn")?.addEventListener("click", closeModal);
-$("modalCloseBtn")?.addEventListener("click", closeModal);
-
-modalOverlay?.addEventListener("click", event => {
-    if (event.target === modalOverlay) {
-        closeModal();
-    }
-});
-
-modalInput?.addEventListener("keydown", event => {
-    if (event.key === "Enter") createItem();
-    if (event.key === "Escape") closeModal();
-});
-
-
-/* =========================================
-   FILE DRAWER
-========================================= */
-
-$("fileMenuBtn")?.addEventListener("click", () => {
+$("fileMenuBtn").addEventListener("click", () => {
     fileDrawer.classList.toggle("open");
 });
 
-$("closeDrawerBtn")?.addEventListener("click", () => {
+$("closeDrawerBtn").addEventListener("click", () => {
     fileDrawer.classList.remove("open");
 });
 
+/* EDITOR */
 
-/* =========================================
-   RUN CODE
-========================================= */
-
-function escapeStyle(text) {
-    return text.replace(/<\/style/gi, "<\\/style");
-}
-
-function escapeScript(text) {
-    return text.replace(/<\/script/gi, "<\\/script");
-}
-
-function runCode() {
-    const project = getProject();
-
-    if (!project) return;
-
-    const files = getAllFiles(project.children);
-
-    const htmlFile = files.find(file =>
-        file.path.split("/").pop().toLowerCase() === "index.html"
-    ) || files.find(file =>
-        file.path.toLowerCase().endsWith(".html")
-    );
-
-    if (!htmlFile) {
-        showToast("Buat file HTML terlebih dahulu");
-        return;
-    }
-
-    let html = htmlFile.node.content || "";
-
-    const css = files
-        .filter(file => file.path.toLowerCase().endsWith(".css"))
-        .map(file => file.node.content || "")
-        .join("\n");
-
-    const js = files
-        .filter(file => file.path.toLowerCase().endsWith(".js"))
-        .map(file => file.node.content || "")
-        .join("\n");
-
-    html = html.replace(
-        /<link\b[^>]*href=["'][^"']+\.css(?:\?[^"']*)?["'][^>]*>/gi,
-        ""
-    );
-
-    html = html.replace(
-        /<script\b[^>]*src=["'][^"']+\.js(?:\?[^"']*)?["'][^>]*>\s*<\/script>/gi,
-        ""
-    );
-
-    const styleTag =
-        "<style>" + escapeStyle(css) + "</style>";
-
-    const diagnosticScript = `
-window.addEventListener("error", function(event) {
-    const box = document.createElement("pre");
-    box.style.cssText =
-        "position:fixed;z-index:999999;bottom:10px;left:10px;right:10px;padding:12px;background:#8b1e2d;color:white;font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;";
-    box.textContent =
-        "ERROR: " + event.message +
-        "\\nFile: " + event.filename +
-        "\\nBaris: " + event.lineno +
-        "\\nKolom: " + event.colno;
-    document.body.appendChild(box);
+codeEditor.addEventListener("input", () => {
+    files[activeFile] = codeEditor.value;
+    $("saveStatus").textContent = "Belum disimpan";
 });
 
-window.addEventListener("unhandledrejection", function(event) {
-    console.error("Promise Error:", event.reason);
-});
+/* SAVE BUTTON */
+
+$("saveBtn").addEventListener("click", saveProject);
+
+/* BUILD PREVIEW */
+
+function buildPreview() {
+    files[activeFile] = codeEditor.value;
+
+    let html = files.html;
+    const css = files.css;
+    const js = files.js;
+
+    const styleTag = `
+<style>
+${css}
+</style>
 `;
 
-    const scriptTag =
-        "<script>" +
-        diagnosticScript +
-        "\n" +
-        escapeScript(js) +
-        "</" + "script>";
+    const scriptTag = `
+<script>
+${js}
+<\/script>
+`;
 
     if (/<\/head>/i.test(html)) {
         html = html.replace(
@@ -850,207 +226,88 @@ window.addEventListener("unhandledrejection", function(event) {
         html += scriptTag;
     }
 
-    previewFrame.srcdoc = html;
-    previewStatus.textContent = "Preview running";
-
-    showToast("Project berhasil dijalankan");
+    return html;
 }
 
-$("runBtn")?.addEventListener("click", runCode);
-$("reloadBtn")?.addEventListener("click", runCode);
+/* RUN CODE */
 
-$("saveBtn")?.addEventListener("click", () => {
-    saveData();
-    showToast("Project tersimpan");
+function runCode() {
+    saveProject();
+
+    previewFrame.srcdoc = buildPreview();
+
+    $("saveStatus").textContent = "Preview diperbarui";
+}
+
+$("runBtn").addEventListener("click", runCode);
+
+$("reloadBtn").addEventListener("click", runCode);
+
+/* SIMULATOR BUTTON */
+
+function openSimulator() {
+    workspace.classList.add("preview-open");
+
+    togglePreviewBtn.title = "Tutup Simulator";
+    togglePreviewBtn.setAttribute("aria-expanded", "true");
+
+    runCode();
+}
+
+function closeSimulator() {
+    workspace.classList.remove("preview-open");
+
+    togglePreviewBtn.title = "Buka Simulator";
+    togglePreviewBtn.setAttribute("aria-expanded", "false");
+}
+
+togglePreviewBtn.addEventListener("click", () => {
+    const isOpen = workspace.classList.contains("preview-open");
+
+    if (isOpen) {
+        closeSimulator();
+    } else {
+        openSimulator();
+    }
 });
 
+$("closePreviewBtn").addEventListener("click", closeSimulator);
 
-/* =========================================
-   SIMULATOR BUTTON FIX
-========================================= */
+/* KEYBOARD TAB SUPPORT */
 
-function setupSimulatorButton() {
-    if (!togglePreviewBtn || !workspace) {
-        console.error("Tombol simulator atau workspace tidak ditemukan.");
-        return;
-    }
+codeEditor.addEventListener("keydown", event => {
+    if (event.key === "Tab") {
+        event.preventDefault();
 
-    // Pastikan tombol berada di toolbar editor.
-    if (editorToolbar && togglePreviewBtn.parentElement !== editorToolbar) {
-        editorToolbar.appendChild(togglePreviewBtn);
-    }
+        const start = codeEditor.selectionStart;
+        const end = codeEditor.selectionEnd;
 
-    // Paksa tombol terlihat.
-    if (editorToolbar) {
-        editorToolbar.style.display = "flex";
-        editorToolbar.style.overflow = "visible";
-        editorToolbar.style.position = "relative";
-    }
-
-    togglePreviewBtn.style.display = "flex";
-    togglePreviewBtn.style.visibility = "visible";
-    togglePreviewBtn.style.opacity = "1";
-    togglePreviewBtn.style.flexShrink = "0";
-    togglePreviewBtn.style.width = "36px";
-    togglePreviewBtn.style.minWidth = "36px";
-    togglePreviewBtn.style.height = "36px";
-    togglePreviewBtn.style.alignItems = "center";
-    togglePreviewBtn.style.justifyContent = "center";
-    togglePreviewBtn.style.marginLeft = "auto";
-    togglePreviewBtn.style.position = "relative";
-    togglePreviewBtn.style.zIndex = "50";
-
-    togglePreviewBtn.addEventListener("click", () => {
-        const isOpen = workspace.classList.toggle("preview-open");
-
-        togglePreviewBtn.title = isOpen
-            ? "Tutup Simulator"
-            : "Buka Simulator";
-
-        togglePreviewBtn.setAttribute(
-            "aria-expanded",
-            String(isOpen)
+        codeEditor.setRangeText(
+            "    ",
+            start,
+            end,
+            "end"
         );
-    });
 
-    console.log("TOMBOL SIMULATOR BERHASIL DIPASANG:", togglePreviewBtn);
-}
-
-setupSimulatorButton();
-
-
-/* =========================================
-   FULLSCREEN
-========================================= */
-
-$("fullscreenBtn")?.addEventListener("click", () => {
-    if (previewPanel) {
-        previewPanel.classList.toggle("fullscreen");
+        files[activeFile] = codeEditor.value;
     }
 });
 
+/* INITIALIZE */
 
-/* =========================================
-   TOAST
-========================================= */
+openFile("html");
+runCode();
 
-function showToast(message) {
-    const toast = $("toast");
-
-    if (!toast) return;
-
-    toast.textContent = message;
-    toast.classList.add("show");
-
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-        toast.classList.remove("show");
-    }, 2000);
-}
-
-
-/* =========================================
-   RENDER & OPEN FILE
-========================================= */
-
-function renderAll() {
-    renderProjects();
-    renderFileTree();
-    renderTabs();
-}
-
-function openFirstHtml() {
-    const project = getProject();
-
-    if (!project) return;
-
-    const firstHtml = getAllFiles(project.children).find(file =>
-        file.path.split("/").pop().toLowerCase() === "index.html"
-    );
-
-    if (firstHtml) {
-        openFile(firstHtml.path);
-    }
-}
-
-
-/* =========================================
-   WELCOME SCREEN
-========================================= */
-
-function renderWelcomeProjects() {
-    if (!welcomeProjectList) return;
-
-    welcomeProjectList.innerHTML = "";
-
-    projects.forEach(project => {
-        const button = document.createElement("button");
-
-        button.type = "button";
-        button.className = "welcome-project-item";
-        button.textContent = project.name;
-
-        button.addEventListener("click", () => {
-            enterWelcomeProject(project.id);
-        });
-
-        welcomeProjectList.appendChild(button);
-    });
-}
-
-function enterWelcomeProject(projectId) {
-    currentProjectId = projectId;
-
-    activeFile = null;
-    openTabs = [];
-    selectedFolder = "";
-
-    codeEditor.value = "";
-    codeEditor.disabled = true;
-
-    activeFilePath.textContent = "Belum ada file";
-    languageStatus.textContent = "No file";
-
-    saveData();
-    renderAll();
-    openFirstHtml();
-
-    welcomeScreen.style.display = "none";
-}
-
-$("welcomeNewProject")?.addEventListener("click", () => {
-    showCreateModal("project");
-});
-
-
-/* =========================================
-   INITIALIZATION
-========================================= */
-
-loadData();
-renderAll();
-openFirstHtml();
-
-renderWelcomeProjects();
-
-if (welcomeScreen) {
-    welcomeScreen.style.display = "flex";
-}
-
-
-/* =========================================
-   SERVICE WORKER
-========================================= */
+/* SERVICE WORKER */
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js")
-            .then(() => {
-                console.log("Faiz Code Studio siap digunakan.");
-            })
             .catch(error => {
-                console.error("Service Worker gagal:", error);
+                console.error(
+                    "Service Worker gagal:",
+                    error
+                );
             });
     });
 }
