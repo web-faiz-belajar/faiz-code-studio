@@ -1730,3 +1730,96 @@ initializeApp();
 
     updateDevice();
 })();
+
+/* =========================================
+   DRAGGABLE DEVICE SIMULATOR
+========================================= */
+
+(() => {
+    const stage = document.getElementById("deviceStage");
+    const frame = document.getElementById("deviceFrame");
+
+    if (!stage || !frame) return;
+
+    let dragging = false;
+    let startX = 0;
+    let startY = 0;
+    let originX = 0;
+    let originY = 0;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    function limit(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function applyPosition() {
+        frame.style.transform =
+            `translate(${offsetX}px, ${offsetY}px)`;
+    }
+
+    function resetPosition() {
+        offsetX = 0;
+        offsetY = 0;
+        applyPosition();
+    }
+
+    frame.addEventListener("pointerdown", event => {
+        if (event.button !== 0 && event.pointerType === "mouse") return;
+
+        dragging = true;
+
+        startX = event.clientX;
+        startY = event.clientY;
+
+        originX = offsetX;
+        originY = offsetY;
+
+        frame.classList.add("dragging");
+        frame.setPointerCapture(event.pointerId);
+    });
+
+    frame.addEventListener("pointermove", event => {
+        if (!dragging) return;
+
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
+
+        const stageRect = stage.getBoundingClientRect();
+        const frameRect = frame.getBoundingClientRect();
+
+        const maxX = Math.max(
+            0,
+            (stageRect.width - frameRect.width) / 2
+        );
+
+        const maxY = Math.max(
+            0,
+            (stageRect.height - frameRect.height) / 2
+        );
+
+        offsetX = limit(originX + dx, -maxX, maxX);
+        offsetY = limit(originY + dy, -maxY, maxY);
+
+        applyPosition();
+    });
+
+    function stopDragging() {
+        dragging = false;
+        frame.classList.remove("dragging");
+    }
+
+    frame.addEventListener("pointerup", stopDragging);
+    frame.addEventListener("pointercancel", stopDragging);
+
+    window.addEventListener("resize", resetPosition);
+
+    const originalUpdateDevice = window.updateDevice;
+
+    if (typeof originalUpdateDevice === "function") {
+        window.updateDevice = function (...args) {
+            resetPosition();
+            return originalUpdateDevice.apply(this, args);
+        };
+    }
+})();
