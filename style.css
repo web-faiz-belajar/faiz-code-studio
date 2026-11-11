@@ -1949,3 +1949,19 @@ textarea:focus-visible {
     position: relative;
     overflow: hidden;
 }
+
+.device-frame {
+    touch-action: none !important;
+    cursor: grab;
+    pointer-events: auto;
+}
+
+.device-frame.dragging {
+    cursor: grabbing;
+    transition: none !important;
+}
+
+.device-screen,
+.device-camera-area {
+    pointer-events: none;
+}
