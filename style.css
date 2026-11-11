@@ -1919,3 +1919,33 @@ textarea:focus-visible {
     min-width: 0;
     min-height: 0;
 }
+
+/* DRAGGABLE DEVICE FRAME */
+
+.device-frame {
+    position: relative;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    will-change: transform;
+}
+
+.device-frame.dragging {
+    cursor: grabbing;
+    transition: none !important;
+    z-index: 5;
+}
+
+.device-frame iframe {
+    pointer-events: none;
+}
+
+.device-frame.dragging iframe {
+    pointer-events: none;
+}
+
+.device-stage {
+    position: relative;
+    overflow: hidden;
+}
