@@ -2,437 +2,409 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090b16">
-  <meta name="description" content="Faiz Code Studio — Premium Mobile Coding Workspace">
-  <title>Faiz Code Studio 5.0</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b16">
+<meta name="description" content="Faiz Code Studio 5.0">
+<title>Faiz Code Studio 5.0</title>
 
-  <link rel="manifest" href="./manifest.json">
-  <link rel="stylesheet" href="./style.css?v=5.0">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="./manifest.json">
+<link rel="stylesheet" href="./style.css?v=5.1">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-  <div class="app-shell">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
+<div class="app-shell">
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
         <div class="brand-icon">&lt;/&gt;</div>
         <div>
-          <h2>Faiz Studio</h2>
-          <span>VERSION 5.0</span>
+            <h2>Faiz Studio</h2>
+            <span>VERSION 5.1</span>
         </div>
-      </div>
+    </div>
 
-      <nav class="sidebar-nav">
+    <nav class="sidebar-nav">
         <p class="nav-label">WORKSPACE</p>
-        <button class="nav-item active" id="homeBtn">
-          <span>▦</span> Dashboard
-        </button>
-        <button class="nav-item" id="projectsNavBtn">
-          <span>▣</span> Projects
-        </button>
+        <button class="nav-item active" id="homeBtn">▦ Dashboard</button>
+        <button class="nav-item" id="projectsNavBtn">▣ Projects</button>
 
         <p class="nav-label">PREFERENCES</p>
-        <button class="nav-item" id="themeBtn">
-          <span>◐</span> Appearance
-        </button>
-      </nav>
+        <button class="nav-item" id="themeBtn">◐ Appearance</button>
+    </nav>
 
-      <div class="sidebar-bottom">
+    <div class="sidebar-bottom">
         <div class="sidebar-profile">
-          <div class="profile-avatar">F</div>
-          <div>
-            <strong>Faiz</strong>
-            <small>Developer Workspace</small>
-          </div>
+            <div class="profile-avatar">F</div>
+            <div>
+                <strong>Faiz</strong>
+                <small>Developer Workspace</small>
+            </div>
         </div>
-      </div>
-    </aside>
+    </div>
+</aside>
 
-    <!-- MAIN AREA -->
-    <main class="main-area">
+<main class="main-area">
 
-      <!-- TOPBAR -->
-      <header class="topbar">
-        <button class="icon-btn mobile-menu-btn" id="menuBtn" aria-label="Menu">☰</button>
-        <div class="breadcrumb">
-          <span>Faiz Studio</span>
-          <span>/</span>
-          <strong id="breadcrumbTitle">Dashboard</strong>
-        </div>
+<header class="topbar">
+    <button class="icon-btn mobile-menu-btn" id="menuBtn">☰</button>
 
-        <div class="topbar-actions">
-          <button class="icon-btn" id="searchBtn" title="Search">⌕</button>
-          <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
-        </div>
-      </header>
+    <div class="breadcrumb">
+        <span>Faiz Studio</span>
+        <span>/</span>
+        <strong id="breadcrumbTitle">Dashboard</strong>
+    </div>
 
-      <!-- DASHBOARD -->
-      <section class="dashboard" id="dashboard">
+    <div class="topbar-actions">
+        <button class="icon-btn" id="searchBtn">⌕</button>
+        <button class="icon-btn" id="settingsBtn">⚙</button>
+    </div>
+</header>
 
-        <div class="welcome-section">
-          <div>
+<!-- DASHBOARD -->
+
+<section class="dashboard" id="dashboard">
+
+    <div class="welcome-section">
+        <div>
             <span class="eyebrow">YOUR CREATIVE WORKSPACE</span>
             <h1>Build something<br><span>extraordinary.</span></h1>
             <p>Tempat semua ide dan project coding kamu berkembang.</p>
-          </div>
-          <div class="welcome-decoration">&lt;/&gt;</div>
         </div>
+        <div class="welcome-decoration">&lt;/&gt;</div>
+    </div>
 
-        <div class="dashboard-toolbar">
-          <div>
+    <div class="dashboard-toolbar">
+        <div>
             <h2>Overview</h2>
             <p>Ringkasan workspace kamu</p>
-          </div>
-          <button class="primary-btn" id="newProjectBtn">
-            <span>＋</span> New Project
-          </button>
         </div>
+        <button class="primary-btn" id="newProjectBtn">＋ New Project</button>
+    </div>
 
-        <div class="stats-grid">
-          <article class="stat-card">
+    <div class="stats-grid">
+        <article class="stat-card">
             <div class="stat-icon purple">▣</div>
             <div>
-              <span>Total Projects</span>
-              <strong id="projectCount">0</strong>
+                <span>Total Projects</span>
+                <strong id="projectCount">0</strong>
             </div>
-          </article>
+        </article>
 
-          <article class="stat-card">
+        <article class="stat-card">
             <div class="stat-icon cyan">⌘</div>
             <div>
-              <span>Workspace</span>
-              <strong>Active</strong>
+                <span>Workspace</span>
+                <strong>Active</strong>
             </div>
-          </article>
+        </article>
 
-          <article class="stat-card">
+        <article class="stat-card">
             <div class="stat-icon green">✓</div>
             <div>
-              <span>Auto Save</span>
-              <strong>Enabled</strong>
+                <span>Auto Save</span>
+                <strong>Enabled</strong>
             </div>
-          </article>
-        </div>
+        </article>
+    </div>
 
-        <div class="section-heading">
-          <div>
+    <div class="section-heading">
+        <div>
             <h2>Your Projects</h2>
             <p>Project yang sedang kamu kerjakan</p>
-          </div>
-          <button class="text-btn" id="viewAllBtn">View all</button>
         </div>
+        <button class="text-btn" id="viewAllBtn">View all</button>
+    </div>
 
-        <div class="project-grid" id="projectGrid"></div>
+    <div class="project-grid" id="projectGrid"></div>
 
-        <div class="empty-state" id="emptyProjects">
-          <div class="empty-icon">⌘</div>
-          <h3>Belum ada project</h3>
-          <p>Mulai project pertamamu dan bangun sesuatu yang keren.</p>
-          <button class="primary-btn" id="emptyCreateBtn">＋ Create Project</button>
-        </div>
-      </section>
+    <div class="empty-state" id="emptyProjects">
+        <div class="empty-icon">⌘</div>
+        <h3>Belum ada project</h3>
+        <p>Mulai project pertamamu.</p>
+        <button class="primary-btn" id="emptyCreateBtn">＋ Create Project</button>
+    </div>
 
-      <!-- EDITOR WORKSPACE -->
-      <section class="workspace hidden" id="workspace">
+</section>
 
-        <div class="workspace-header">
-          <div class="workspace-project">
-            <button class="icon-btn" id="backDashboardBtn" title="Dashboard">←</button>
+<!-- WORKSPACE -->
+
+<section class="workspace hidden" id="workspace">
+
+    <div class="workspace-header">
+        <div class="workspace-project">
+            <button class="icon-btn" id="backDashboardBtn">←</button>
             <div>
-              <h2 id="currentProjectName">Project</h2>
-              <p id="currentProjectInfo">Web Project</p>
+                <h2 id="currentProjectName">Project</h2>
+                <p id="currentProjectInfo">Web Project</p>
             </div>
-          </div>
+        </div>
 
-          <div class="workspace-actions">
+        <div class="workspace-actions">
             <button class="secondary-btn" id="saveBtn">Save</button>
             <button class="secondary-btn" id="previewBtn">Preview</button>
             <button class="primary-btn" id="runBtn">▶ Run</button>
-          </div>
         </div>
+    </div>
 
-        <div class="editor-layout">
+    <!-- EDITOR AND SIMULATOR -->
 
-          <!-- EDITOR SIDE -->
-          <section class="editor-section">
+    <div class="editor-layout">
+
+        <!-- EDITOR -->
+
+        <section class="editor-section">
 
             <div class="editor-toolbar">
-              <button class="toolbar-btn" id="fileMenuBtn">☷ Files</button>
-              <div class="active-file-info">
-                <span>●</span>
-                <span id="activeFilePath">index.html</span>
-                <small id="saveStatus">Saved</small>
-              </div>
-              <button class="toolbar-btn" id="editorMoreBtn">•••</button>
+                <button class="toolbar-btn" id="fileMenuBtn">☷ Files</button>
+
+                <div class="active-file-info">
+                    <span>●</span>
+                    <span id="activeFilePath">index.html</span>
+                    <small id="saveStatus">Saved</small>
+                </div>
+
+                <button class="toolbar-btn" id="editorMoreBtn">•••</button>
             </div>
 
-            <!-- FILE DRAWER -->
             <aside class="file-drawer hidden" id="fileDrawer">
-              <div class="drawer-header">
-                <div>
-                  <strong>Explorer</strong>
-                  <small id="drawerProjectName">Project</small>
+                <div class="drawer-header">
+                    <div>
+                        <strong>Explorer</strong>
+                        <small id="drawerProjectName">Project</small>
+                    </div>
+                    <button class="icon-btn" id="closeDrawerBtn">×</button>
                 </div>
-                <button class="icon-btn" id="closeDrawerBtn">×</button>
-              </div>
 
-              <div class="drawer-actions">
-                <button class="secondary-btn" id="addFileBtn">＋ New File</button>
-                <button class="secondary-btn" id="importFileBtn">Import</button>
-              </div>
+                <div class="drawer-actions">
+                    <button class="secondary-btn" id="addFileBtn">＋ New File</button>
+                    <button class="secondary-btn" id="importFileBtn">Import</button>
+                </div>
 
-              <div class="file-list" id="fileList"></div>
+                <div class="file-list" id="fileList"></div>
             </aside>
 
-            <!-- TABS -->
             <div class="tabs-bar" id="tabsBar"></div>
 
-            <!-- CODE EDITOR -->
             <div class="code-editor-container">
-              <div class="line-numbers" id="lineNumbers">1</div>
-              <textarea
-                id="codeEditor"
-                spellcheck="false"
-                autocapitalize="off"
-                autocomplete="off"
-                autocorrect="off"
-                aria-label="Code Editor"
-                placeholder="Mulai menulis kode di sini..."
-              ></textarea>
+                <div class="line-numbers" id="lineNumbers">1</div>
+                <textarea id="codeEditor"
+                    spellcheck="false"
+                    autocapitalize="off"
+                    autocomplete="off"
+                    autocorrect="off"
+                    placeholder="Mulai menulis kode..."
+                    aria-label="Code Editor"></textarea>
             </div>
 
             <div class="editor-statusbar">
-              <span id="languageLabel">HTML</span>
-              <span id="cursorPosition">Ln 1, Col 1</span>
-              <span id="editorEncoding">UTF-8</span>
+                <span id="languageLabel">HTML</span>
+                <span id="cursorPosition">Ln 1, Col 1</span>
+                <span id="editorEncoding">UTF-8</span>
             </div>
-          </section>
 
-          
-<!-- ADAPTIVE DEVICE SIMULATOR -->
-<section class="preview-panel hidden" id="previewPanel">
+        </section>
 
-  <div class="preview-header">
-    <div class="preview-heading">
-      <span class="preview-indicator"></span>
-      <div>
-        <strong>Device Simulator</strong>
-        <small>Live responsive preview</small>
-      </div>
-    </div>
+        <!-- SIMULATOR -->
 
-    <div class="preview-actions">
-      <button class="icon-btn" id="reloadBtn" title="Reload">↻</button>
-      <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
-      <button class="icon-btn" id="closePreviewBtn" title="Close">×</button>
-    </div>
-  </div>
+        <section class="preview-panel hidden" id="previewPanel">
 
-  <!-- DEVICE TOOLBAR -->
-  <div class="device-toolbar">
+            <div class="preview-header">
+                <div class="preview-heading">
+                    <span class="preview-indicator"></span>
+                    <div>
+                        <strong>Device Simulator</strong>
+                        <small>Live responsive preview</small>
+                    </div>
+                </div>
 
-    <div class="device-selector">
-      <button class="device-option active" data-device="mobile">
-        <span>▯</span>
-        <small>Mobile</small>
-      </button>
+                <div class="preview-actions">
+                    <button class="icon-btn" id="reloadBtn">↻</button>
+                    <button class="icon-btn" id="fullscreenBtn">⛶</button>
+                    <button class="icon-btn" id="closePreviewBtn">×</button>
+                </div>
+            </div>
 
-      <button class="device-option" data-device="tablet">
-        <span>▭</span>
-        <small>Tablet</small>
-      </button>
+            <div class="device-toolbar">
+                <div class="device-selector">
+                    <button class="device-option active" data-device="mobile">
+                        <span>▯</span>
+                        <small>Mobile</small>
+                    </button>
 
-      <button class="device-option" data-device="desktop">
-        <span>▱</span>
-        <small>Desktop</small>
-      </button>
-    </div>
+                    <button class="device-option" data-device="tablet">
+                        <span>▭</span>
+                        <small>Tablet</small>
+                    </button>
 
-    <button class="rotate-device-btn" id="previewRotateBtn" title="Rotate device">
-      <span>⟳</span>
-    </button>
-  </div>
+                    <button class="device-option" data-device="desktop">
+                        <span>▱</span>
+                        <small>Desktop</small>
+                    </button>
+                </div>
 
-  <!-- DEVICE STAGE -->
-  <div class="device-stage" id="deviceStage">
+                <button class="rotate-device-btn" id="previewRotateBtn">⟳</button>
+            </div>
 
-    <div class="device-frame mobile-device" id="deviceFrame">
+            <div class="device-stage" id="deviceStage">
+                <div class="device-frame mobile-device" id="deviceFrame">
 
-      <div class="device-camera-area device-drag-handle">
-    <span></span>
-    <small>DRAG DEVICE</small>
-    <span></span>
-  </div>
-        <span class="device-camera"></span>
-        <span class="device-speaker"></span>
-        <span class="device-camera"></span>
-      </div>
+                    <div class="device-camera-area">
+                        <span class="device-camera"></span>
+                        <span class="device-speaker"></span>
+                        <span class="device-camera"></span>
+                    </div>
 
-      <div class="device-screen">
-        <iframe
-          id="previewFrame"
-          title="Project Preview"
-          sandbox="allow-scripts allow-forms allow-modals"
-        ></iframe>
-      </div>
+                    <div class="device-screen">
+                        <iframe id="previewFrame"
+                            title="Project Preview"
+                            sandbox="allow-scripts allow-forms allow-modals"></iframe>
+                    </div>
 
-    </div>
+                </div>
+            </div>
 
-  </div>
+            <div class="device-info">
+                <span id="deviceName">Mobile Preview</span>
+                <span id="deviceResolution">390 × 844</span>
+            </div>
 
-  <!-- DEVICE STAGE -->
-  <div class="device-stage" id="deviceStage">
-
-    <div class="device-frame mobile-device" id="deviceFrame">
-
-      <!-- DRAG HANDLE -->
-      <div class="device-camera-area device-drag-handle">
-        <span class="device-camera"></span>
-        <span class="device-speaker"></span>
-        <span class="device-camera"></span>
-      </div>
-
-      <!-- DEVICE SCREEN -->
-      <div class="device-screen">
-        <iframe
-          id="previewFrame"
-          title="Project Preview"
-          sandbox="allow-scripts allow-forms allow-modals"
-        ></iframe>
-      </div>
+        </section>
 
     </div>
 
-  </div>
+    <!-- BOTTOM PANEL -->
 
-  <!-- DEVICE INFORMATION -->
-  <div class="device-info">
-    <span id="deviceName">Mobile Preview</span>
-    <span id="deviceResolution">390 × 844</span>
-  </div>
+    <section class="bottom-panel" id="bottomPanel">
 
-        <!-- BOTTOM PANEL -->
-        <section class="bottom-panel" id="bottomPanel">
-          <div class="bottom-panel-header">
+        <div class="bottom-panel-header">
             <div class="bottom-tabs">
-              <button class="bottom-tab active" data-panel="terminal">Terminal</button>
-              <button class="bottom-tab" data-panel="console">Console</button>
-              <button class="bottom-tab" data-panel="problems">Problems</button>
+                <button class="bottom-tab active" data-panel="terminal">Terminal</button>
+                <button class="bottom-tab" data-panel="console">Console</button>
+                <button class="bottom-tab" data-panel="problems">Problems</button>
             </div>
-            <div>
-              <button class="icon-btn" id="clearConsoleBtn" title="Clear">⌫</button>
-              <button class="icon-btn" id="toggleBottomPanelBtn" title="Collapse">⌄</button>
-            </div>
-          </div>
 
-          <div class="bottom-panel-content">
+            <div>
+                <button class="icon-btn" id="clearConsoleBtn">⌫</button>
+                <button class="icon-btn" id="toggleBottomPanelBtn">⌄</button>
+            </div>
+        </div>
+
+        <div class="bottom-panel-content">
+
             <div class="terminal-view" id="terminalView">
-              <p class="terminal-welcome">Faiz Code Studio Terminal</p>
-              <p>Workspace ready.</p>
-              <div class="terminal-input-row">
-                <span>❯</span>
-                <input id="terminalInput" type="text" placeholder="Type a command..." autocomplete="off">
-              </div>
+                <p class="terminal-welcome">Faiz Code Studio Terminal</p>
+                <p>Workspace ready.</p>
+                <div class="terminal-input-row">
+                    <span>❯</span>
+                    <input id="terminalInput" placeholder="Type a command..." autocomplete="off">
+                </div>
             </div>
 
             <div class="console-view hidden" id="consoleView">
-              <div id="consoleOutput">
-                <p class="console-empty">Console output akan muncul di sini.</p>
-              </div>
+                <div id="consoleOutput">
+                    <p class="console-empty">Console output akan muncul di sini.</p>
+                </div>
             </div>
 
             <div class="problems-view hidden" id="problemsView">
-              <p class="console-empty" id="problemsOutput">Belum ada masalah terdeteksi.</p>
+                <p class="console-empty" id="problemsOutput">Belum ada masalah.</p>
             </div>
-          </div>
-        </section>
-      </section>
-    </main>
-  </div>
 
-  <!-- PROJECT MODAL -->
-  <div class="modal-overlay hidden" id="projectModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <div>
-          <span class="eyebrow">PROJECT MANAGER</span>
-          <h2 id="projectModalTitle">Create Project</h2>
         </div>
-        <button class="icon-btn" id="closeProjectModal">×</button>
-      </div>
+    </section>
 
-      <label for="projectNameInput">Project Name</label>
-      <input id="projectNameInput" type="text" placeholder="My Awesome Project">
+</section>
 
-      <label for="projectTemplate">Starter Template</label>
-      <select id="projectTemplate">
-        <option value="html">HTML / CSS / JavaScript</option>
-        <option value="blank">Blank Project</option>
-      </select>
+</main>
+</div>
 
-      <button class="primary-btn modal-submit" id="confirmProjectBtn">Create Project</button>
-    </div>
-  </div>
+<!-- PROJECT MODAL -->
 
-  <!-- SEARCH MODAL -->
-  <div class="modal-overlay hidden" id="searchModal">
+<div class="modal-overlay hidden" id="projectModal">
     <div class="modal-card">
-      <div class="modal-header">
-        <h2>Search Workspace</h2>
-        <button class="icon-btn" id="closeSearchModal">×</button>
-      </div>
-      <input id="searchInput" type="search" placeholder="Search files and projects...">
-      <p id="searchMessage"></p>
-      <button class="primary-btn modal-submit" id="confirmSearchBtn">Search</button>
-    </div>
-  </div>
-
-  <!-- SETTINGS MODAL -->
-  <div class="modal-overlay hidden" id="settingsModal">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h2>Workspace Settings</h2>
-        <button class="icon-btn" id="closeSettingsModal">×</button>
-      </div>
-      <div class="settings-option">
-        <div>
-          <strong>Appearance</strong>
-          <p>Atur tampilan workspace</p>
+        <div class="modal-header">
+            <div>
+                <span class="eyebrow">PROJECT MANAGER</span>
+                <h2 id="projectModalTitle">Create Project</h2>
+            </div>
+            <button class="icon-btn" id="closeProjectModal">×</button>
         </div>
-        <select id="appearanceSelect">
-          <option value="dark">Dark</option>
-          <option value="light">Light</option>
-          <option value="system">System</option>
+
+        <label for="projectNameInput">Project Name</label>
+        <input id="projectNameInput" placeholder="My Awesome Project">
+
+        <label for="projectTemplate">Starter Template</label>
+        <select id="projectTemplate">
+            <option value="html">HTML / CSS / JavaScript</option>
+            <option value="blank">Blank Project</option>
         </select>
-      </div>
-      <div class="settings-option">
-        <div>
-          <strong>Editor Font Size</strong>
-          <p>Ukuran teks editor</p>
-        </div>
-        <select id="fontSizeSelect">
-          <option value="12">12px</option>
-          <option value="13">13px</option>
-          <option value="14" selected>14px</option>
-          <option value="15">15px</option>
-          <option value="16">16px</option>
-        </select>
-      </div>
+
+        <button class="primary-btn modal-submit" id="confirmProjectBtn">Create Project</button>
     </div>
-  </div>
+</div>
 
-  <!-- TOAST -->
-  <div class="toast" id="toast"></div>
+<!-- SEARCH MODAL -->
 
-  <input type="file" id="fileInput" hidden multiple>
-  <input type="file" id="projectImportInput" hidden accept=".json,application/json">
+<div class="modal-overlay hidden" id="searchModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2>Search Workspace</h2>
+            <button class="icon-btn" id="closeSearchModal">×</button>
+        </div>
+        <input id="searchInput" type="search" placeholder="Search projects...">
+        <p id="searchMessage"></p>
+        <button class="primary-btn modal-submit" id="confirmSearchBtn">Search</button>
+    </div>
+</div>
 
-  <script src="./script.js?v=5.0"></script>
+<!-- SETTINGS MODAL -->
+
+<div class="modal-overlay hidden" id="settingsModal">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2>Workspace Settings</h2>
+            <button class="icon-btn" id="closeSettingsModal">×</button>
+        </div>
+
+        <div class="settings-option">
+            <div>
+                <strong>Appearance</strong>
+                <p>Atur tampilan workspace</p>
+            </div>
+            <select id="appearanceSelect">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="system">System</option>
+            </select>
+        </div>
+
+        <div class="settings-option">
+            <div>
+                <strong>Editor Font Size</strong>
+                <p>Ukuran teks editor</p>
+            </div>
+            <select id="fontSizeSelect">
+                <option value="12">12px</option>
+                <option value="13">13px</option>
+                <option value="14" selected>14px</option>
+                <option value="15">15px</option>
+                <option value="16">16px</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="fileInput" hidden multiple>
+<input type="file" id="projectImportInput" hidden accept=".json,application/json">
+
+<script src="./script.js?v=5.1"></script>
 </body>
 </html>
