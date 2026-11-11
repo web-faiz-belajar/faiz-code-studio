@@ -2,10 +2,14 @@
 /* =====================================================
    FAIZ CODE STUDIO 5.0
    PREMIUM EDITION
-   Midnight / Violet / Cyan
+   MIDNIGHT / VIOLET / CYAN
+   CLEAN RESPONSIVE EDITION
 ===================================================== */
 
-/* RESET */
+/* =========================
+   RESET & VARIABLES
+========================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -103,9 +107,9 @@ textarea:focus-visible {
     display: none !important;
 }
 
-/* =====================================================
+/* =========================
    APP LAYOUT
-===================================================== */
+========================= */
 
 .app-shell {
     min-height: 100vh;
@@ -118,9 +122,9 @@ textarea:focus-visible {
     margin-left: var(--sidebar-width);
 }
 
-/* =====================================================
+/* =========================
    SIDEBAR
-===================================================== */
+========================= */
 
 .sidebar {
     position: fixed;
@@ -253,9 +257,9 @@ textarea:focus-visible {
     font-size: 10px;
 }
 
-/* =====================================================
+/* =========================
    TOPBAR
-===================================================== */
+========================= */
 
 .topbar {
     height: 68px;
@@ -315,9 +319,9 @@ textarea:focus-visible {
     display: none;
 }
 
-/* =====================================================
+/* =========================
    DASHBOARD
-===================================================== */
+========================= */
 
 .dashboard {
     max-width: 1450px;
@@ -341,6 +345,7 @@ textarea:focus-visible {
         radial-gradient(circle at 85% 20%,rgba(80,217,233,.18),transparent 25%),
         radial-gradient(circle at 70% 100%,rgba(137,117,255,.25),transparent 45%),
         linear-gradient(115deg,#17142e,#111b32);
+
     box-shadow: var(--shadow);
 }
 
@@ -415,7 +420,9 @@ textarea:focus-visible {
     font-size: 12px;
 }
 
-/* BUTTONS */
+/* =========================
+   BUTTONS
+========================= */
 
 .primary-btn,
 .secondary-btn,
@@ -465,9 +472,9 @@ textarea:focus-visible {
     padding: 8px;
 }
 
-/* =====================================================
+/* =========================
    STAT CARDS
-===================================================== */
+========================= */
 
 .stats-grid {
     display: grid;
@@ -530,9 +537,9 @@ textarea:focus-visible {
     font-size: 19px;
 }
 
-/* =====================================================
+/* =========================
    PROJECT GRID
-===================================================== */
+========================= */
 
 .section-heading {
     margin: 36px 0 17px;
@@ -626,9 +633,9 @@ textarea:focus-visible {
     font-size: 12px;
 }
 
-/* =====================================================
+/* =========================
    WORKSPACE
-===================================================== */
+========================= */
 
 .workspace {
     height: calc(100vh - 68px);
@@ -681,7 +688,7 @@ textarea:focus-visible {
 
 .editor-section {
     position: relative;
-    flex: 1;
+    flex: 1 1 60%;
     min-width: 0;
     min-height: 0;
     display: flex;
@@ -814,9 +821,9 @@ textarea:focus-visible {
     font-size: 9px;
 }
 
-/* =====================================================
+/* =========================
    FILE DRAWER
-===================================================== */
+========================= */
 
 .file-drawer {
     position: absolute;
@@ -887,104 +894,340 @@ textarea:focus-visible {
     color: var(--primary);
 }
 
-/* =====================================================
+/* =========================
    PREVIEW PANEL
-===================================================== */
+========================= */
 
 .preview-panel {
+    flex: 0 1 40%;
     width: 40%;
-    min-width: 240px;
+    min-width: 250px;
     max-width: 550px;
+    min-height: 0;
+
     display: flex;
     flex-direction: column;
     overflow: hidden;
 
     border: 1px solid var(--border);
-    border-radius: 15px;
+    border-radius: 16px;
     background: var(--panel);
 }
 
+.preview-panel.hidden {
+    display: none !important;
+}
+
 .preview-header {
-    min-height: 46px;
+    flex-shrink: 0;
+    min-height: 54px;
+    padding: 9px 13px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 11px;
+    gap: 10px;
     border-bottom: 1px solid var(--border);
 }
 
-.preview-header > div:first-child {
+.preview-heading {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
 }
 
-.preview-header strong {
-    font-size: 11px;
+.preview-heading > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.preview-heading strong {
+    font-size: 13px;
+}
+
+.preview-heading small {
+    color: var(--muted);
+    font-size: 10px;
 }
 
 .preview-indicator {
-    width: 7px;
-    height: 7px;
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: var(--green);
-    box-shadow: 0 0 10px var(--green);
+    box-shadow: 0 0 12px #36d39980;
 }
 
 .preview-actions {
     display: flex;
+    align-items: center;
     gap: 5px;
 }
 
 .preview-actions .icon-btn {
-    width: 29px;
-    height: 29px;
-    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
 }
 
-.preview-device {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    padding: 12px;
-    background: var(--bg-soft);
-}
+/* DEVICE TOOLBAR */
 
-.device-top {
-    min-height: 32px;
+.device-toolbar {
+    flex-shrink: 0;
+    min-height: 56px;
+    padding: 7px 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 13px;
-    border-radius: 9px 9px 0 0;
-    background: var(--panel-3);
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.device-selector {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 11px;
+    background: var(--panel-2);
+}
+
+.device-option {
+    min-width: 53px;
+    min-height: 39px;
+    padding: 4px 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+
     color: var(--muted);
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    transition: .2s;
 }
 
-.device-top span {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--green);
+.device-option span {
+    font-size: 15px;
+    line-height: 17px;
 }
 
-.device-top small {
+.device-option small {
     font-size: 9px;
+    font-weight: 600;
 }
 
-#previewFrame {
-    flex: 1;
+.device-option.active {
+    color: #fff;
+    background: linear-gradient(135deg,#6758e8,#4777ec);
+    box-shadow: 0 3px 12px #6758e840;
+}
+
+.rotate-device-btn {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+/* DEVICE STAGE */
+
+.device-stage {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 240px;
+
+    padding: 18px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: auto;
+    overscroll-behavior: contain;
+
+    background-color: #0b1020;
+    background-image:
+        radial-gradient(#ffffff13 1px,transparent 1px);
+    background-size: 18px 18px;
+}
+
+/* DEVICE FRAME */
+
+.device-frame {
+    position: relative;
+    flex: 0 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    background: #090b10;
+    border: 2px solid #596174;
+
+    box-shadow:
+        0 0 0 1px #ffffff12,
+        0 18px 45px #00000070,
+        inset 0 0 0 1px #ffffff12;
+
+    transition:
+        width .25s ease,
+        height .25s ease,
+        border-radius .25s ease;
+}
+
+/* MOBILE DEVICE */
+
+.mobile-device {
+    width: min(230px,85%);
+    height: min(410px,52vh);
+    min-height: 240px;
+    border-radius: 29px;
+    padding: 7px;
+}
+
+/* TABLET DEVICE */
+
+.tablet-device {
+    width: min(430px,95%);
+    height: min(340px,48vh);
+    min-height: 230px;
+    border-radius: 22px;
+    padding: 7px;
+}
+
+/* DESKTOP DEVICE */
+
+.desktop-device {
+    width: min(720px,98%);
+    height: min(400px,55vh);
+    min-height: 240px;
+    border-radius: 11px;
+    padding: 6px;
+}
+
+/* DEVICE DETAILS */
+
+.device-camera-area {
+    flex: 0 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: #090b10;
+}
+
+.device-camera {
+    width: 5px;
+    height: 5px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #252b39;
+    border: 1px solid #596174;
+}
+
+.device-speaker {
+    width: 34px;
+    height: 4px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #343b4b;
+}
+
+/* DEVICE SCREEN */
+
+.device-screen {
+    position: relative;
+    flex: 1 1 auto;
     width: 100%;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 21px;
+}
+
+.device-screen iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
     min-height: 0;
     border: 0;
-    border-radius: 0 0 9px 9px;
-    background: white;
+    background: #fff;
 }
 
-/* =====================================================
+.tablet-device .device-screen {
+    border-radius: 13px;
+}
+
+.desktop-device .device-camera-area {
+    display: none;
+}
+
+.desktop-device .device-screen {
+    border-radius: 5px;
+}
+
+/* LANDSCAPE */
+
+.device-frame.landscape {
+    flex-direction: row;
+}
+
+.mobile-device.landscape {
+    width: min(410px,95%);
+    height: min(230px,42vh);
+    min-height: 170px;
+}
+
+.tablet-device.landscape {
+    width: min(560px,98%);
+    height: min(320px,48vh);
+    min-height: 210px;
+}
+
+.device-frame.landscape .device-camera-area {
+    flex: 0 0 20px;
+    flex-direction: column;
+}
+
+.device-frame.landscape .device-speaker {
+    width: 4px;
+    height: 34px;
+}
+
+.device-frame.landscape .device-screen {
+    flex: 1 1 auto;
+}
+
+/* DEVICE INFORMATION */
+
+.device-info {
+    flex-shrink: 0;
+    min-height: 36px;
+    padding: 7px 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    color: var(--muted);
+    font-size: 10px;
+    border-top: 1px solid var(--border);
+}
+
+/* =========================
    BOTTOM PANEL
-===================================================== */
+========================= */
 
 .bottom-panel {
     flex-shrink: 0;
@@ -1005,6 +1248,7 @@ textarea:focus-visible {
 }
 
 .bottom-panel-header {
+    flex-shrink: 0;
     min-height: 39px;
     display: flex;
     align-items: center;
@@ -1086,9 +1330,9 @@ textarea:focus-visible {
     margin-bottom: 5px;
 }
 
-/* =====================================================
+/* =========================
    MODALS
-===================================================== */
+========================= */
 
 .modal-overlay {
     position: fixed;
@@ -1187,9 +1431,9 @@ textarea:focus-visible {
     width: 110px;
 }
 
-/* =====================================================
+/* =========================
    TOAST
-===================================================== */
+========================= */
 
 .toast {
     position: fixed;
@@ -1218,9 +1462,9 @@ textarea:focus-visible {
     transform: translate(-50%,0);
 }
 
-/* =====================================================
+/* =========================
    ANIMATIONS
-===================================================== */
+========================= */
 
 @keyframes fadeIn {
     from { opacity: 0; }
@@ -1238,9 +1482,9 @@ textarea:focus-visible {
     }
 }
 
-/* =====================================================
-   RESPONSIVE TABLET
-===================================================== */
+/* =========================
+   TABLET RESPONSIVE
+========================= */
 
 @media (max-width: 1050px) {
     :root {
@@ -1255,11 +1499,6 @@ textarea:focus-visible {
         grid-template-columns: repeat(2,minmax(0,1fr));
     }
 
-    .preview-panel {
-        width: 38%;
-        min-width: 210px;
-    }
-
     .welcome-decoration {
         width: 120px;
         height: 120px;
@@ -1267,9 +1506,9 @@ textarea:focus-visible {
     }
 }
 
-/* =====================================================
-   RESPONSIVE MOBILE
-===================================================== */
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
 
 @media (max-width: 700px) {
     :root {
@@ -1452,26 +1691,114 @@ textarea:focus-visible {
     }
 
     .editor-section {
-        flex: 1;
-        min-height: 0;
+        flex: 1 1 57%;
+        min-height: 180px;
     }
 
     .preview-panel {
+        flex: 0 1 43%;
         width: 100%;
         max-width: none;
         min-width: 0;
-        height: 43%;
-        min-height: 150px;
-        flex: 0 0 43%;
+        min-height: 190px;
     }
 
-    .preview-device {
-        padding: 7px;
+    .preview-header {
+        min-height: 43px;
+        padding: 6px 9px;
+    }
+
+    .preview-heading strong {
+        font-size: 11px;
+    }
+
+    .preview-heading small {
+        font-size: 9px;
+    }
+
+    .device-toolbar {
+        min-height: 47px;
+        padding: 5px 7px;
+    }
+
+    .device-option {
+        min-width: 48px;
+        min-height: 34px;
+    }
+
+    .device-option span {
+        font-size: 13px;
+    }
+
+    .device-option small {
+        font-size: 8px;
+    }
+
+    .rotate-device-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .device-stage {
+        min-height: 130px;
+        padding: 8px;
+    }
+
+    .mobile-device {
+        width: min(155px,65%);
+        height: min(265px,34vh);
+        min-height: 150px;
+        border-radius: 23px;
+        padding: 5px;
+    }
+
+    .tablet-device {
+        width: 85%;
+        height: 210px;
+        min-height: 140px;
+    }
+
+    .desktop-device {
+        width: 95%;
+        height: 190px;
+        min-height: 130px;
+    }
+
+    .mobile-device.landscape {
+        width: 90%;
+        height: 145px;
+        min-height: 110px;
+    }
+
+    .tablet-device.landscape {
+        width: 95%;
+        height: 190px;
+    }
+
+    .device-camera-area {
+        flex-basis: 15px;
+        gap: 5px;
+    }
+
+    .device-camera {
+        width: 4px;
+        height: 4px;
+    }
+
+    .device-speaker {
+        width: 25px;
+        height: 3px;
+    }
+
+    .device-info {
+        min-height: 29px;
+        padding: 5px 9px;
+        font-size: 9px;
     }
 
     .bottom-panel {
-        min-height: 115px;
-        max-height: 155px;
+        min-height: 105px;
+        max-height: 145px;
     }
 
     .bottom-panel.collapsed {
@@ -1524,9 +1851,9 @@ textarea:focus-visible {
     }
 }
 
-/* =====================================================
+/* =========================
    SMALL MOBILE
-===================================================== */
+========================= */
 
 @media (max-width: 380px) {
     .welcome-section h1 {
@@ -1545,11 +1872,20 @@ textarea:focus-visible {
     .topbar {
         padding: 0 8px;
     }
+
+    .device-selector {
+        gap: 2px;
+    }
+
+    .device-option {
+        min-width: 43px;
+        padding: 3px;
+    }
 }
 
-/* =====================================================
+/* =========================
    LANDSCAPE MOBILE
-===================================================== */
+========================= */
 
 @media (max-width: 900px) and (orientation: landscape) {
     .workspace {
@@ -1560,21 +1896,35 @@ textarea:focus-visible {
         flex-direction: row;
     }
 
+    .editor-section {
+        flex: 1 1 60%;
+        min-height: 0;
+    }
+
     .preview-panel {
+        flex: 0 1 40%;
         width: 40%;
-        height: auto;
-        flex: 0 0 40%;
+        min-width: 190px;
+        min-height: 0;
+    }
+
+    .device-stage {
+        min-height: 120px;
+    }
+
+    .mobile-device {
+        height: min(220px,45vh);
     }
 
     .bottom-panel {
-        min-height: 85px;
-        max-height: 115px;
+        min-height: 75px;
+        max-height: 100px;
     }
 }
 
-/* =====================================================
+/* =========================
    REDUCED MOTION
-===================================================== */
+========================= */
 
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -1585,389 +1935,4 @@ textarea:focus-visible {
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
     }
-}
-
-/* =========================================
-   FAIZ CODE STUDIO 5.0
-   ADAPTIVE DEVICE SIMULATOR
-========================================= */
-
-.preview-panel {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    min-height: 0;
-    overflow: hidden;
-    background: var(--panel, #10182a);
-    border: 1px solid var(--border, #253149);
-    border-radius: 18px;
-}
-
-.preview-panel.hidden {
-    display: none !important;
-}
-
-.preview-header {
-    min-height: 64px;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    border-bottom: 1px solid var(--border, #253149);
-}
-
-.preview-heading {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-}
-
-.preview-heading > div {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.preview-heading strong {
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.preview-heading small {
-    color: var(--muted, #8994aa);
-    font-size: 11px;
-}
-
-.preview-indicator {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: #36d399;
-    box-shadow: 0 0 12px #36d39980;
-}
-
-.preview-actions {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.device-toolbar {
-    min-height: 62px;
-    padding: 9px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border, #253149);
-}
-
-.device-selector {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px;
-    border-radius: 12px;
-    background: var(--panel2, #172238);
-}
-
-.device-option {
-    min-width: 65px;
-    min-height: 43px;
-    padding: 5px 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 2px;
-    color: var(--muted, #8994aa);
-    background: transparent;
-    border: 0;
-    border-radius: 9px;
-    cursor: pointer;
-    transition: .2s ease;
-}
-
-.device-option span {
-    font-size: 17px;
-    line-height: 18px;
-}
-
-.device-option small {
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.device-option.active {
-    color: #fff;
-    background: linear-gradient(135deg, #6758e8, #4777ec);
-    box-shadow: 0 3px 12px #6758e840;
-}
-
-.rotate-device-btn {
-    width: 39px;
-    height: 39px;
-    display: grid;
-    place-items: center;
-    color: var(--text, #e8edfa);
-    background: var(--panel2, #172238);
-    border: 1px solid var(--border, #253149);
-    border-radius: 11px;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-.device-stage {
-    flex: 1;
-    min-height: 280px;
-    padding: 25px 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: auto;
-    background-color: #0b1020;
-    background-image:
-        radial-gradient(#ffffff13 1px, transparent 1px);
-    background-size: 18px 18px;
-}
-
-/* DEVICE FRAME */
-
-.device-frame {
-    position: relative;
-    flex: 0 0 auto;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background: #090b10;
-    border: 2px solid #596174;
-    box-shadow:
-        0 0 0 1px #ffffff12,
-        0 18px 45px #00000070,
-        inset 0 0 0 1px #ffffff12;
-    transition:
-        width .3s ease,
-        height .3s ease,
-        border-radius .3s ease;
-}
-
-.mobile-device {
-    width: min(250px, 75%);
-    height: min(440px, 55vh);
-    min-height: 280px;
-    border-radius: 31px;
-    padding: 7px;
-}
-
-.tablet-device {
-    width: min(430px, 90%);
-    height: min(340px, 48vh);
-    min-height: 250px;
-    border-radius: 23px;
-    padding: 7px;
-}
-
-.desktop-device {
-    width: min(720px, 96%);
-    height: min(400px, 55vh);
-    min-height: 260px;
-    border-radius: 12px;
-    padding: 6px;
-}
-
-/* DEVICE DETAILS */
-
-.device-camera-area {
-    flex: 0 0 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    background: #090b10;
-}
-
-.device-camera {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: #252b39;
-    border: 1px solid #596174;
-}
-
-.device-speaker {
-    width: 34px;
-    height: 4px;
-    border-radius: 10px;
-    background: #343b4b;
-}
-
-.device-screen {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-    background: #fff;
-    border-radius: 22px;
-}
-
-.tablet-device .device-screen {
-    border-radius: 14px;
-}
-
-.desktop-device .device-camera-area {
-    display: none;
-}
-
-.desktop-device .device-screen {
-    border-radius: 6px;
-}
-
-.device-screen iframe {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
-    background: #fff;
-}
-
-/* LANDSCAPE */
-
-.device-frame.landscape {
-    flex-direction: row;
-}
-
-.mobile-device.landscape {
-    width: min(440px, 90%);
-    height: min(250px, 42vh);
-}
-
-.tablet-device.landscape {
-    width: min(560px, 95%);
-    height: min(330px, 48vh);
-}
-
-.device-frame.landscape .device-camera-area {
-    flex: 0 0 20px;
-    flex-direction: column;
-}
-
-.device-frame.landscape .device-speaker {
-    width: 4px;
-    height: 34px;
-}
-
-.device-frame.landscape .device-screen {
-    flex: 1;
-}
-
-/* DEVICE INFORMATION */
-
-.device-info {
-    min-height: 39px;
-    padding: 8px 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    color: var(--muted, #8994aa);
-    font-size: 11px;
-    border-top: 1px solid var(--border, #253149);
-}
-
-/* SMALL SCREEN */
-
-@media (max-width: 600px) {
-    .device-stage {
-        padding: 18px 8px;
-        min-height: 300px;
-    }
-
-    .mobile-device {
-        width: min(230px, 72%);
-        height: min(410px, 53vh);
-    }
-
-    .tablet-device {
-        width: 90%;
-        height: 280px;
-    }
-
-    .desktop-device {
-        width: 96%;
-        height: 260px;
-    }
-
-    .mobile-device.landscape {
-        width: 95%;
-        height: 210px;
-    }
-
-    .tablet-device.landscape {
-        width: 96%;
-        height: 260px;
-    }
-
-    .device-option {
-        min-width: 57px;
-    }
-}
-
-/* ADAPTIVE VIEWPORT SIZE */
-
-.device-frame .device-screen {
-    width: 100%;
-    height: 100%;
-    min-width: 0;
-    min-height: 0;
-}
-
-/* =========================================
-   DEVICE DRAG SYSTEM
-========================================= */
-
-.device-stage {
-    position: relative;
-    overflow: auto;
-    touch-action: pan-x pan-y;
-}
-
-.device-frame {
-    position: relative;
-    flex: 0 0 auto;
-    cursor: default;
-    user-select: none;
-    -webkit-user-select: none;
-    will-change: transform;
-}
-
-.device-camera-area.device-drag-handle {
-    flex: 0 0 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-
-    position: relative;
-    z-index: 10;
-}
-
-.device-camera-area.device-drag-handle:active {
-    cursor: grabbing;
-}
-
-.device-camera-area.device-drag-handle small {
-    color: #7f8ba5;
-    font-size: 7px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    pointer-events: none;
-}
-
-.device-frame.dragging {
-    transition: none !important;
-    z-index: 5;
 }
