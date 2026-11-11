@@ -1952,3 +1952,25 @@ textarea:focus-visible {
     cursor: grabbing;
     transition: none !important;
 }
+
+/* DEVICE DRAG HANDLE */
+
+.device-camera-area.device-drag-handle {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    position: relative;
+    z-index: 10;
+}
+
+.device-camera-area.device-drag-handle small {
+    color: #7f8ba5;
+    font-size: 7px;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+
+.device-frame.dragging {
+    transition: none !important;
+}
