@@ -1732,7 +1732,7 @@ initializeApp();
 })();
 
 /* =========================================
-   DRAGGABLE DEVICE SIMULATOR
+   DEVICE DRAG FIX
 ========================================= */
 
 (() => {
@@ -1741,62 +1741,48 @@ initializeApp();
 
     if (!stage || !frame) return;
 
-    let dragging = false;
+    let active = false;
     let startX = 0;
     let startY = 0;
-    let originX = 0;
-    let originY = 0;
-    let offsetX = 0;
-    let offsetY = 0;
-
-    function limit(value, min, max) {
-        return Math.min(Math.max(value, min), max);
-    }
-
-    function applyPosition() {
-        frame.style.transform =
-            `translate(${offsetX}px, ${offsetY}px)`;
-    }
-
-    function resetPosition() {
-        offsetX = 0;
-        offsetY = 0;
-        applyPosition();
-    }
+    let x = 0;
+    let y = 0;
 
     frame.addEventListener("pointerdown", event => {
-        if (event.button !== 0 && event.pointerType === "mouse") return;
+        if (event.target.closest("iframe")) return;
 
-        dragging = true;
-
-        startX = event.clientX;
-        startY = event.clientY;
-
-        originX = offsetX;
-        originY = offsetY;
+        active = true;
+        startX = event.clientX - x;
+        startY = event.clientY - y;
 
         frame.classList.add("dragging");
         frame.setPointerCapture(event.pointerId);
     });
 
     frame.addEventListener("pointermove", event => {
-        if (!dragging) return;
+        if (!active) return;
 
-        const dx = event.clientX - startX;
-        const dy = event.clientY - startY;
+        const rect = stage.getBoundingClientRect();
+        const frameWidth = frame.offsetWidth;
+        const frameHeight = frame.offsetHeight;
 
-        const stageRect = stage.getBoundingClientRect();
-        const frameRect = frame.getBoundingClientRect();
+        const maxX = Math.max(0, (rect.width - frameWidth) / 2);
+        const maxY = Math.max(0, (rect.height - frameHeight) / 2);
 
-        const maxX = Math.max(
-            0,
-            (stageRect.width - frameRect.width) / 2
-        );
+        x = Math.max(-maxX, Math.min(maxX, event.clientX - startX));
+        y = Math.max(-maxY, Math.min(maxY, event.clientY - startY));
 
-        const maxY = Math.max(
-            0,
-            (stageRect.height - frameRect.height) / 2
-        );
+        frame.style.transform = `translate(${x}px, ${y}px)`;
+    });
+
+    function stopDrag() {
+        active = false;
+        frame.classList.remove("dragging");
+    }
+
+    frame.addEventListener("pointerup", stopDrag);
+    frame.addEventListener("pointercancel", stopDrag);
+})();
+
 
         offsetX = limit(originX + dx, -maxX, maxX);
         offsetY = limit(originY + dy, -maxY, maxY);
