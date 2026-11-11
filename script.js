@@ -1731,9 +1731,8 @@ initializeApp();
     updateDevice();
 })();
 
-/* =========================================
-   DEVICE DRAG FIX
-========================================= */
+
+/* DEVICE DRAG - INTERACTION SAFE */
 
 (() => {
     const stage = document.getElementById("deviceStage");
@@ -1744,15 +1743,17 @@ initializeApp();
     let active = false;
     let startX = 0;
     let startY = 0;
-    let x = 0;
-    let y = 0;
+    let offsetX = 0;
+    let offsetY = 0;
 
+    // Drag hanya dimulai dari area frame,
+    // bukan dari layar website.
     frame.addEventListener("pointerdown", event => {
-        if (event.target.closest("iframe")) return;
+        if (event.target.closest("iframe, .device-screen")) return;
 
         active = true;
-        startX = event.clientX - x;
-        startY = event.clientY - y;
+        startX = event.clientX;
+        startY = event.clientY;
 
         frame.classList.add("dragging");
         frame.setPointerCapture(event.pointerId);
@@ -1761,17 +1762,21 @@ initializeApp();
     frame.addEventListener("pointermove", event => {
         if (!active) return;
 
-        const rect = stage.getBoundingClientRect();
-        const frameWidth = frame.offsetWidth;
-        const frameHeight = frame.offsetHeight;
+        const dx = event.clientX - startX;
+        const dy = event.clientY - startY;
 
-        const maxX = Math.max(0, (rect.width - frameWidth) / 2);
-        const maxY = Math.max(0, (rect.height - frameHeight) / 2);
+        const stageRect = stage.getBoundingClientRect();
+        const maxX = Math.max(0, (stageRect.width - frame.offsetWidth) / 2);
+        const maxY = Math.max(0, (stageRect.height - frame.offsetHeight) / 2);
 
-        x = Math.max(-maxX, Math.min(maxX, event.clientX - startX));
-        y = Math.max(-maxY, Math.min(maxY, event.clientY - startY));
+        offsetX = Math.max(-maxX, Math.min(maxX, offsetX + dx));
+        offsetY = Math.max(-maxY, Math.min(maxY, offsetY + dy));
 
-        frame.style.transform = `translate(${x}px, ${y}px)`;
+        startX = event.clientX;
+        startY = event.clientY;
+
+        frame.style.transform =
+            `translate(${offsetX}px, ${offsetY}px)`;
     });
 
     function stopDrag() {
@@ -1781,31 +1786,4 @@ initializeApp();
 
     frame.addEventListener("pointerup", stopDrag);
     frame.addEventListener("pointercancel", stopDrag);
-})();
-
-
-        offsetX = limit(originX + dx, -maxX, maxX);
-        offsetY = limit(originY + dy, -maxY, maxY);
-
-        applyPosition();
-    });
-
-    function stopDragging() {
-        dragging = false;
-        frame.classList.remove("dragging");
-    }
-
-    frame.addEventListener("pointerup", stopDragging);
-    frame.addEventListener("pointercancel", stopDragging);
-
-    window.addEventListener("resize", resetPosition);
-
-    const originalUpdateDevice = window.updateDevice;
-
-    if (typeof originalUpdateDevice === "function") {
-        window.updateDevice = function (...args) {
-            resetPosition();
-            return originalUpdateDevice.apply(this, args);
-        };
-    }
 })();
