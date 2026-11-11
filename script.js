@@ -1618,3 +1618,115 @@ function initializeApp() {
 }
 
 initializeApp();
+
+/* =========================================
+   ADAPTIVE DEVICE SIMULATOR
+========================================= */
+
+(() => {
+    const deviceFrame = document.getElementById("deviceFrame");
+    const deviceOptions = document.querySelectorAll(".device-option");
+    const rotateButton = document.getElementById("previewRotateBtn");
+    const deviceName = document.getElementById("deviceName");
+    const deviceResolution = document.getElementById("deviceResolution");
+
+    if (
+        !deviceFrame ||
+        !rotateButton ||
+        !deviceName ||
+        !deviceResolution
+    ) return;
+
+    let currentDevice = "mobile";
+    let isLandscape = false;
+
+    const deviceSettings = {
+        mobile: {
+            name: "Mobile Preview",
+            width: 390,
+            height: 844
+        },
+        tablet: {
+            name: "Tablet Preview",
+            width: 768,
+            height: 1024
+        },
+        desktop: {
+            name: "Desktop Preview",
+            width: 1440,
+            height: 900
+        }
+    };
+
+    function updateDevice() {
+        const settings = deviceSettings[currentDevice];
+
+        deviceFrame.classList.remove(
+            "mobile-device",
+            "tablet-device",
+            "desktop-device",
+            "landscape"
+        );
+
+        deviceFrame.classList.add(`${currentDevice}-device`);
+
+        if (isLandscape && currentDevice !== "desktop") {
+            deviceFrame.classList.add("landscape");
+        }
+
+        deviceOptions.forEach(button => {
+            button.classList.toggle(
+                "active",
+                button.dataset.device === currentDevice
+            );
+        });
+
+        const width = isLandscape
+            ? settings.height
+            : settings.width;
+
+        const height = isLandscape
+            ? settings.width
+            : settings.height;
+
+        deviceName.textContent = settings.name;
+
+        deviceResolution.textContent =
+            `${width} × ${height}`;
+
+        deviceFrame.style.setProperty(
+            "--device-width",
+            `${width}px`
+        );
+
+        deviceFrame.style.setProperty(
+            "--device-height",
+            `${height}px`
+        );
+    }
+
+    deviceOptions.forEach(button => {
+        button.addEventListener("click", () => {
+            const selectedDevice = button.dataset.device;
+
+            if (!deviceSettings[selectedDevice]) return;
+
+            currentDevice = selectedDevice;
+
+            if (currentDevice === "desktop") {
+                isLandscape = false;
+            }
+
+            updateDevice();
+        });
+    });
+
+    rotateButton.addEventListener("click", () => {
+        if (currentDevice === "desktop") return;
+
+        isLandscape = !isLandscape;
+        updateDevice();
+    });
+
+    updateDevice();
+})();
