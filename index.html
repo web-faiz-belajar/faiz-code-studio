@@ -214,34 +214,81 @@
             </div>
           </section>
 
-          <!-- PREVIEW PANEL -->
-          <section class="preview-panel hidden" id="previewPanel">
-            <div class="preview-header">
-              <div>
-                <span class="preview-indicator"></span>
-                <strong>Live Preview</strong>
-              </div>
-              <div class="preview-actions">
-                <button class="icon-btn" id="reloadBtn" title="Reload">↻</button>
-                <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
-                <button class="icon-btn" id="closePreviewBtn" title="Close">×</button>
-              </div>
-            </div>
+          
+<!-- ADAPTIVE DEVICE SIMULATOR -->
+<section class="preview-panel hidden" id="previewPanel">
 
-            <div class="preview-device">
-              <div class="device-top">
-                <span></span>
-                <small>Preview Browser</small>
-                <span></span>
-              </div>
-              <iframe
-                id="previewFrame"
-                title="Project Preview"
-                sandbox="allow-scripts allow-forms allow-modals"
-              ></iframe>
-            </div>
-          </section>
-        </div>
+  <div class="preview-header">
+    <div class="preview-heading">
+      <span class="preview-indicator"></span>
+      <div>
+        <strong>Device Simulator</strong>
+        <small>Live responsive preview</small>
+      </div>
+    </div>
+
+    <div class="preview-actions">
+      <button class="icon-btn" id="reloadBtn" title="Reload">↻</button>
+      <button class="icon-btn" id="fullscreenBtn" title="Fullscreen">⛶</button>
+      <button class="icon-btn" id="closePreviewBtn" title="Close">×</button>
+    </div>
+  </div>
+
+  <!-- DEVICE TOOLBAR -->
+  <div class="device-toolbar">
+
+    <div class="device-selector">
+      <button class="device-option active" data-device="mobile">
+        <span>▯</span>
+        <small>Mobile</small>
+      </button>
+
+      <button class="device-option" data-device="tablet">
+        <span>▭</span>
+        <small>Tablet</small>
+      </button>
+
+      <button class="device-option" data-device="desktop">
+        <span>▱</span>
+        <small>Desktop</small>
+      </button>
+    </div>
+
+    <button class="rotate-device-btn" id="previewRotateBtn" title="Rotate device">
+      <span>⟳</span>
+    </button>
+  </div>
+
+  <!-- DEVICE STAGE -->
+  <div class="device-stage" id="deviceStage">
+
+    <div class="device-frame mobile-device" id="deviceFrame">
+
+      <div class="device-camera-area">
+        <span class="device-camera"></span>
+        <span class="device-speaker"></span>
+        <span class="device-camera"></span>
+      </div>
+
+      <div class="device-screen">
+        <iframe
+          id="previewFrame"
+          title="Project Preview"
+          sandbox="allow-scripts allow-forms allow-modals"
+        ></iframe>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- DEVICE INFORMATION -->
+  <div class="device-info">
+    <span id="deviceName">Mobile Preview</span>
+    <span id="deviceResolution">390 × 844</span>
+  </div>
+
+</section>
 
         <!-- BOTTOM PANEL -->
         <section class="bottom-panel" id="bottomPanel">
