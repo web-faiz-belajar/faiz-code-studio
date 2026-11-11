@@ -1937,14 +1937,6 @@ textarea:focus-visible {
     z-index: 5;
 }
 
-.device-frame iframe {
-    pointer-events: none;
-}
-
-.device-frame.dragging iframe {
-    pointer-events: none;
-}
-
 .device-stage {
     position: relative;
     overflow: hidden;
@@ -1959,9 +1951,4 @@ textarea:focus-visible {
 .device-frame.dragging {
     cursor: grabbing;
     transition: none !important;
-}
-
-.device-screen,
-.device-camera-area {
-    pointer-events: none;
 }
