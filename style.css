@@ -1586,3 +1586,327 @@ textarea:focus-visible {
         transition-duration: .01ms !important;
     }
 }
+
+/* =========================================
+   FAIZ CODE STUDIO 5.0
+   ADAPTIVE DEVICE SIMULATOR
+========================================= */
+
+.preview-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--panel, #10182a);
+    border: 1px solid var(--border, #253149);
+    border-radius: 18px;
+}
+
+.preview-panel.hidden {
+    display: none !important;
+}
+
+.preview-header {
+    min-height: 64px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--border, #253149);
+}
+
+.preview-heading {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.preview-heading > div {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.preview-heading strong {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.preview-heading small {
+    color: var(--muted, #8994aa);
+    font-size: 11px;
+}
+
+.preview-indicator {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #36d399;
+    box-shadow: 0 0 12px #36d39980;
+}
+
+.preview-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.device-toolbar {
+    min-height: 62px;
+    padding: 9px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border, #253149);
+}
+
+.device-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px;
+    border-radius: 12px;
+    background: var(--panel2, #172238);
+}
+
+.device-option {
+    min-width: 65px;
+    min-height: 43px;
+    padding: 5px 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2px;
+    color: var(--muted, #8994aa);
+    background: transparent;
+    border: 0;
+    border-radius: 9px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.device-option span {
+    font-size: 17px;
+    line-height: 18px;
+}
+
+.device-option small {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.device-option.active {
+    color: #fff;
+    background: linear-gradient(135deg, #6758e8, #4777ec);
+    box-shadow: 0 3px 12px #6758e840;
+}
+
+.rotate-device-btn {
+    width: 39px;
+    height: 39px;
+    display: grid;
+    place-items: center;
+    color: var(--text, #e8edfa);
+    background: var(--panel2, #172238);
+    border: 1px solid var(--border, #253149);
+    border-radius: 11px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.device-stage {
+    flex: 1;
+    min-height: 280px;
+    padding: 25px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    background-color: #0b1020;
+    background-image:
+        radial-gradient(#ffffff13 1px, transparent 1px);
+    background-size: 18px 18px;
+}
+
+/* DEVICE FRAME */
+
+.device-frame {
+    position: relative;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: #090b10;
+    border: 2px solid #596174;
+    box-shadow:
+        0 0 0 1px #ffffff12,
+        0 18px 45px #00000070,
+        inset 0 0 0 1px #ffffff12;
+    transition:
+        width .3s ease,
+        height .3s ease,
+        border-radius .3s ease;
+}
+
+.mobile-device {
+    width: min(250px, 75%);
+    height: min(440px, 55vh);
+    min-height: 280px;
+    border-radius: 31px;
+    padding: 7px;
+}
+
+.tablet-device {
+    width: min(430px, 90%);
+    height: min(340px, 48vh);
+    min-height: 250px;
+    border-radius: 23px;
+    padding: 7px;
+}
+
+.desktop-device {
+    width: min(720px, 96%);
+    height: min(400px, 55vh);
+    min-height: 260px;
+    border-radius: 12px;
+    padding: 6px;
+}
+
+/* DEVICE DETAILS */
+
+.device-camera-area {
+    flex: 0 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: #090b10;
+}
+
+.device-camera {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #252b39;
+    border: 1px solid #596174;
+}
+
+.device-speaker {
+    width: 34px;
+    height: 4px;
+    border-radius: 10px;
+    background: #343b4b;
+}
+
+.device-screen {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: #fff;
+    border-radius: 22px;
+}
+
+.tablet-device .device-screen {
+    border-radius: 14px;
+}
+
+.desktop-device .device-camera-area {
+    display: none;
+}
+
+.desktop-device .device-screen {
+    border-radius: 6px;
+}
+
+.device-screen iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #fff;
+}
+
+/* LANDSCAPE */
+
+.device-frame.landscape {
+    flex-direction: row;
+}
+
+.mobile-device.landscape {
+    width: min(440px, 90%);
+    height: min(250px, 42vh);
+}
+
+.tablet-device.landscape {
+    width: min(560px, 95%);
+    height: min(330px, 48vh);
+}
+
+.device-frame.landscape .device-camera-area {
+    flex: 0 0 20px;
+    flex-direction: column;
+}
+
+.device-frame.landscape .device-speaker {
+    width: 4px;
+    height: 34px;
+}
+
+.device-frame.landscape .device-screen {
+    flex: 1;
+}
+
+/* DEVICE INFORMATION */
+
+.device-info {
+    min-height: 39px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--muted, #8994aa);
+    font-size: 11px;
+    border-top: 1px solid var(--border, #253149);
+}
+
+/* SMALL SCREEN */
+
+@media (max-width: 600px) {
+    .device-stage {
+        padding: 18px 8px;
+        min-height: 300px;
+    }
+
+    .mobile-device {
+        width: min(230px, 72%);
+        height: min(410px, 53vh);
+    }
+
+    .tablet-device {
+        width: 90%;
+        height: 280px;
+    }
+
+    .desktop-device {
+        width: 96%;
+        height: 260px;
+    }
+
+    .mobile-device.landscape {
+        width: 95%;
+        height: 210px;
+    }
+
+    .tablet-device.landscape {
+        width: 96%;
+        height: 260px;
+    }
+
+    .device-option {
+        min-width: 57px;
+    }
+}
