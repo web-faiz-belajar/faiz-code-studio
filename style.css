@@ -1920,57 +1920,54 @@ textarea:focus-visible {
     min-height: 0;
 }
 
-/* DRAGGABLE DEVICE FRAME */
+/* =========================================
+   DEVICE DRAG SYSTEM
+========================================= */
+
+.device-stage {
+    position: relative;
+    overflow: auto;
+    touch-action: pan-x pan-y;
+}
 
 .device-frame {
     position: relative;
-    cursor: grab;
-    touch-action: none;
+    flex: 0 0 auto;
+    cursor: default;
     user-select: none;
     -webkit-user-select: none;
     will-change: transform;
 }
 
-.device-frame.dragging {
-    cursor: grabbing;
-    transition: none !important;
-    z-index: 5;
-}
-
-.device-stage {
-    position: relative;
-    overflow: hidden;
-}
-
-.device-frame {
-    touch-action: none !important;
-    cursor: grab;
-    pointer-events: auto;
-}
-
-.device-frame.dragging {
-    cursor: grabbing;
-    transition: none !important;
-}
-
-/* DEVICE DRAG HANDLE */
-
 .device-camera-area.device-drag-handle {
+    flex: 0 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
     cursor: grab;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
+
     position: relative;
     z-index: 10;
+}
+
+.device-camera-area.device-drag-handle:active {
+    cursor: grabbing;
 }
 
 .device-camera-area.device-drag-handle small {
     color: #7f8ba5;
     font-size: 7px;
-    letter-spacing: 1px;
     font-weight: 700;
+    letter-spacing: 1px;
+    pointer-events: none;
 }
 
 .device-frame.dragging {
     transition: none !important;
+    z-index: 5;
 }
