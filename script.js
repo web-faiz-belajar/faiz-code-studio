@@ -1732,7 +1732,7 @@ initializeApp();
 })();
 
 /* =========================================
-   DEVICE DRAG HANDLE
+   DEVICE DRAG SYSTEM - MOBILE FIX
 ========================================= */
 
 (() => {
@@ -1745,54 +1745,62 @@ initializeApp();
     let dragging = false;
     let startX = 0;
     let startY = 0;
+
     let offsetX = 0;
     let offsetY = 0;
+
+    function applyPosition() {
+        frame.style.transform =
+            `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+    }
 
     handle.addEventListener("pointerdown", event => {
         event.preventDefault();
 
         dragging = true;
+
         startX = event.clientX - offsetX;
         startY = event.clientY - offsetY;
 
         handle.setPointerCapture(event.pointerId);
+
         frame.classList.add("dragging");
     });
 
     handle.addEventListener("pointermove", event => {
         if (!dragging) return;
 
-        const rect = stage.getBoundingClientRect();
+        offsetX = event.clientX - startX;
+        offsetY = event.clientY - startY;
 
-        const maxX = Math.max(
-            0,
-            (rect.width - frame.offsetWidth) / 2
-        );
-
-        const maxY = Math.max(
-            0,
-            (rect.height - frame.offsetHeight) / 2
-        );
-
-        offsetX = Math.max(
-            -maxX,
-            Math.min(maxX, event.clientX - startX)
-        );
-
-        offsetY = Math.max(
-            -maxY,
-            Math.min(maxY, event.clientY - startY)
-        );
-
-        frame.style.transform =
-            `translate(${offsetX}px, ${offsetY}px)`;
+        applyPosition();
     });
 
     function stopDragging() {
+        if (!dragging) return;
+
         dragging = false;
         frame.classList.remove("dragging");
     }
 
     handle.addEventListener("pointerup", stopDragging);
     handle.addEventListener("pointercancel", stopDragging);
+    handle.addEventListener("lostpointercapture", stopDragging);
+
+    // Reset posisi ketika ukuran perangkat berubah
+    document.querySelectorAll(".device-option").forEach(button => {
+        button.addEventListener("click", () => {
+            offsetX = 0;
+            offsetY = 0;
+            applyPosition();
+        });
+    });
+
+    document.getElementById("previewRotateBtn")
+        ?.addEventListener("click", () => {
+            offsetX = 0;
+            offsetY = 0;
+            applyPosition();
+        });
+
 })();
